@@ -11,6 +11,8 @@ const bookingService = require('./services/booking.service');
 const contactService = require('./services/contact.service');
 const aiTestService = require('./services/aiTest.service');
 const contentService = require('./services/content.service');
+const orderService = require('./services/order.service');
+const { wechatPay } = require('./payment');
 const cityConfig = require('./city.config');
 
 const validTypes = ['community', 'salon', 'tour', 'visit', 'course', 'enterprise'];
@@ -238,6 +240,112 @@ router.post('/upload', (req, res) => {
     }
     res.json({ success: true, url: '/uploads/' + req.file.filename, message: '上传成功' });
   });
+});
+
+// ==========================================
+// POST /api/orders — 创建课程订单（报名 + 支付）
+// ==========================================
+router.post('/orders', async (req, res) => {
+  try {
+    const { product, name, phone, city, source } = req.body;
+    if (!product || !name || !phone) {
+      return res.status(400).json({ success: false, error: '缺少必填字段：product, name, phone' });
+    }
+    if (!PHONE_RE.test(phone)) {
+      return res.status(400).json({ success: false, error: '手机号格式不正确' });
+    }
+    const order = await orderService.createOrder({ product, name, phone, city, source });
+    res.status(201).json({
+      success: true,
+      message: '订单已创建，请完成支付',
+      data: {
+        orderNo: order.order_no, title: order.title, amount: order.amount,
+        channel: order.channel, qrCodeUrl: order.qr_code_url,
+        bookingId: order.booking_id, created_at: order.created_at,
+      },
+    });
+  } catch (err) {
+    console.error('[API] 创建订单失败:', err.message);
+    const status = err.status || 500;
+    res.status(status).json({ success: false, error: status === 400 ? err.message : '服务器内部错误' });
+  }
+});
+
+// ==========================================
+// GET /api/orders/:orderNo — 订单状态（前端支付轮询）
+// ==========================================
+router.get('/orders/:orderNo', (req, res) => {
+  try {
+    const s = orderService.getStatus(req.params.orderNo);
+    if (!s) return res.status(404).json({ success: false, error: '订单不存在' });
+    res.json({ success: true, data: s });
+  } catch (err) {
+    console.error('[API] 查询订单失败:', err);
+    res.status(500).json({ success: false, error: '服务器内部错误' });
+  }
+});
+
+// ==========================================
+// GET /api/orders — 订单列表（管理端）
+// ==========================================
+router.get('/orders', (req, res) => {
+  try {
+    if (!requireAuth(req, res)) return;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const pageSize = Math.min(100, Math.max(1, parseInt(req.query.pageSize) || 20));
+    res.json({ success: true, ...orderService.list(page, pageSize) });
+  } catch (err) {
+    console.error('[API] 查询订单列表失败:', err);
+    res.status(500).json({ success: false, error: '服务器内部错误' });
+  }
+});
+
+// ==========================================
+// POST /api/orders/:id/confirm — 人工确认收款（管理端，收款码模式）
+// ==========================================
+router.post('/orders/:id/confirm', (req, res) => {
+  try {
+    if (!requireAuth(req, res)) return;
+    const order = orderService.confirmPaid(parseInt(req.params.id), req.body.transactionId);
+    if (!order) return res.status(404).json({ success: false, error: '订单不存在' });
+    res.json({ success: true, message: '已确认收款', data: { status: order.status, paid_at: order.paid_at } });
+  } catch (err) {
+    console.error('[API] 确认收款失败:', err);
+    res.status(500).json({ success: false, error: '服务器内部错误' });
+  }
+});
+
+// ==========================================
+// POST /api/pay/notify — 微信支付回调（express.raw 挂载于 index.js，body 为原始 Buffer）
+// ==========================================
+router.post('/pay/notify', (req, res) => {
+  try {
+    const body = req.body.toString('utf8');
+    const signature = req.headers['wechatpay-signature'];
+    const serial = req.headers['wechatpay-serial'];
+    const timestamp = req.headers['wechatpay-timestamp'];
+    const nonce = req.headers['wechatpay-nonce'];
+
+    if (!wechatPay.isConfigured()) {
+      console.warn('[支付回调] 微信支付未配置，忽略回调');
+      return res.json({ code: 'FAIL', message: '微信支付未配置' });
+    }
+    if (!signature || !wechatPay.verifyNotify({ body, signature, timestamp, nonce })) {
+      console.warn('[支付回调] 验签失败');
+      return res.json({ code: 'FAIL', message: '验签失败' });
+    }
+
+    const event = JSON.parse(body);
+    const decrypted = wechatPay.decryptNotifyResource(event.resource);
+    // decrypted: { out_trade_no, transaction_id, trade_state, ... }
+    if (decrypted.trade_state === 'SUCCESS') {
+      orderService.markPaidByOrderNo(decrypted.out_trade_no, decrypted.transaction_id);
+    }
+    res.json({ code: 'SUCCESS', message: '成功' });
+  } catch (err) {
+    console.error('[支付回调] 处理失败:', err.message);
+    res.json({ code: 'FAIL', message: err.message });
+  }
 });
 
 // ==========================================

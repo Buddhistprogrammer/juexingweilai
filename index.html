@@ -63,12 +63,6 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
 .nav-links { display: flex; align-items: center; gap: 32px; }
 .nav-links a { font-size: 0.9rem; font-weight: 500; color: #64748b; transition: color 0.2s; }
 .nav-links a:hover { color: #fff; }
-.city-selector {
-  padding: 8px 16px; border-radius: 50px; background: rgba(79,70,229,0.15);
-  border: 1px solid rgba(99,102,241,0.3); color: #6366f1; font-size: 0.85rem;
-  font-weight: 600; cursor: pointer; transition: all 0.3s;
-}
-.city-selector:hover { background: rgba(79,70,229,0.25); }
 .nav-mobile-toggle { display: none; background: none; color: #fff; font-size: 1.5rem; }
 
 /* ========== Hero ========== */
@@ -556,6 +550,18 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
 }
 .opt-item input { display: none; }
 
+/* ========== Pay Modal ========== */
+.pay-qrcode {
+  margin: 20px auto; width: 240px; height: 240px;
+}
+.pay-qrcode img {
+  width: 100%; height: 100%; object-fit: contain;
+  border: 1px solid #e2e8f0; border-radius: 12px;
+  padding: 8px; background: #fff;
+}
+.pay-tip { color: #64748b; font-size: 0.9rem; margin-bottom: 12px; }
+.pay-status { font-size: 1.05rem; font-weight: 700; color: #6366f1; margin-bottom: 20px; }
+
 /* ========== Float Consult ========== */
 .float-consult {
   position: fixed; right: 24px; bottom: 24px; z-index: 1500;
@@ -617,16 +623,6 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
       <a href="#centers">四大中心</a>
       <a href="#ai-test">含AI量检测</a>
       <a href="#pricing">价格</a>
-      <select class="city-selector" id="citySelect" onchange="switchCity(this.value)">
-        <option value="beijing">北京</option>
-        <option value="shanghai">上海</option>
-        <option value="shenzhen" selected>深圳</option>
-        <option value="guangzhou">广州</option>
-        <option value="hangzhou">杭州</option>
-        <option value="chengdu">成都</option>
-        <option value="wuhan">武汉</option>
-        <option value="nanjing">南京</option>
-      </select>
     </div>
     <button class="nav-mobile-toggle" onclick="toggleMobileNav()">☰</button>
   </div>
@@ -1197,6 +1193,19 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
 <!-- ===== FLOAT CONSULT ===== -->
 <div class="float-consult" onclick="openConsult()" data-c="floatConsult.text">💬 免费咨询</div>
 
+<!-- ===== PAY MODAL ===== -->
+<div class="modal-overlay" id="payOverlay">
+  <div class="modal" style="text-align:center">
+    <button class="modal-close" onclick="closePayModal()">✕</button>
+    <h3 id="payTitle">AI普及线上课</h3>
+    <p class="sub" id="payAmount">¥299.00</p>
+    <div class="pay-qrcode" id="payQrcode"></div>
+    <p class="pay-tip" id="payTip"></p>
+    <div class="pay-status" id="payStatus">⏳ 等待支付...</div>
+    <button class="btn btn-primary" style="width:100%" onclick="closePayModal()">关闭</button>
+  </div>
+</div>
+
 <script>
 /* ========== API + LocalStorage 双模式 ========== */
 const API_BASE = '/api';
@@ -1254,7 +1263,9 @@ let currentCity = 'shenzhen';
 
 function switchCity(city) {
   currentCity = city;
-  document.getElementById('citySelect').value = city;
+  // 右上角城市选择器已移除（仅保留 URL/页脚城市切换），此处兼容旧引用
+  const sel = document.getElementById('citySelect');
+  if (sel) sel.value = city;
   document.getElementById('heroCityName').textContent = cityNames[city] || city;
   localStorage.setItem('laikedixiong_city', city);
   // 弹窗已打开时同步城市字段
@@ -1470,8 +1481,14 @@ async function submitBooking(e) {
   try {
     const result = await apiCall('POST', '/bookings', data);
     if (result.success) {
-      document.getElementById('modalForm').style.display = 'none';
-      document.getElementById('formSuccess').style.display = 'block';
+      if (type === 'course') {
+        // 课程报名：进入支付流程（创建订单 → 弹出支付窗口）
+        closeModal();
+        createOrderAndPay(data);
+      } else {
+        document.getElementById('modalForm').style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      }
     } else {
       alert('提交失败：' + (result.error || '请稍后重试'));
     }
@@ -1482,10 +1499,76 @@ async function submitBooking(e) {
   }
 }
 
+/* ========== 课程支付（价格模块） ========== */
+let payTimer = null;
+
+// 提交报名后创建订单并弹出支付窗口（course 类型专用）
+async function createOrderAndPay(data) {
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product: 'course', name: data.name, phone: data.phone, city: data.city }),
+    });
+    const d = await res.json();
+    if (d.success) {
+      openPayModal(d.data);
+    } else {
+      alert('下单失败：' + (d.error || '请稍后重试'));
+    }
+  } catch (err) {
+    alert('网络错误，请稍后重试');
+  }
+}
+
+function openPayModal(order) {
+  document.getElementById('payTitle').textContent = order.title;
+  document.getElementById('payAmount').textContent = '¥' + (order.amount / 100).toFixed(2);
+  document.getElementById('payStatus').textContent = '⏳ 等待支付...';
+  document.getElementById('payStatus').style.color = '';
+
+  const qr = document.getElementById('payQrcode');
+  const tip = document.getElementById('payTip');
+  if (order.channel === 'wechat') {
+    qr.innerHTML = `<img src="${order.qrCodeUrl}" alt="微信支付二维码">`;
+    tip.textContent = '打开微信「扫一扫」扫码付款';
+  } else {
+    qr.innerHTML = `<img src="${order.qrCodeUrl || '/uploads/pay-qrcode.png'}" alt="收款二维码">`;
+    tip.textContent = '请使用微信/支付宝扫码付款，付款后我们将在 1 个工作日内确认到账';
+  }
+
+  document.getElementById('payOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  // 每 5 秒轮询订单状态，支付成功后自动提示
+  clearInterval(payTimer);
+  payTimer = setInterval(() => pollOrder(order.orderNo), 5000);
+  pollOrder(order.orderNo);
+}
+
+async function pollOrder(orderNo) {
+  try {
+    const res = await fetch(`/api/orders/${orderNo}`);
+    const d = await res.json();
+    if (d.success && d.data.status === 'paid') {
+      clearInterval(payTimer);
+      const st = document.getElementById('payStatus');
+      st.textContent = '✅ 支付成功！课程开通信息将发送到您的手机';
+      st.style.color = '#10b981';
+    }
+  } catch (e) { /* 网络抖动忽略，下轮重试 */ }
+}
+
+function closePayModal() {
+  clearInterval(payTimer);
+  document.getElementById('payOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 async function submitQuickForm(e) {
   e.preventDefault();
   const inputs = e.target.querySelectorAll('input');
-  const data = { name: inputs[0]?.value, phone: inputs[1]?.value, city: document.getElementById('citySelect')?.value };
+  const data = { name: inputs[0]?.value, phone: inputs[1]?.value, city: currentCity };
 
   try {
     const result = await apiCall('POST', '/contacts', data);
@@ -2073,7 +2156,7 @@ initQuiz();
 
 // ESC 关闭弹窗
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeConsult(); }
+  if (e.key === 'Escape') { closeModal(); closeConsult(); closePayModal(); }
 });
 </script>
 </body>

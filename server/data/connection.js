@@ -93,6 +93,23 @@ function createTables() {
       updated_at  TEXT    DEFAULT (datetime('now','localtime'))
     )
   `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS orders (
+      id             INTEGER PRIMARY KEY AUTOINCREMENT,
+      order_no       TEXT    UNIQUE NOT NULL,
+      product        TEXT    NOT NULL,
+      title          TEXT    NOT NULL,
+      amount         INTEGER NOT NULL,
+      channel        TEXT    DEFAULT 'manual',
+      status         TEXT    DEFAULT 'pending',
+      booking_id     INTEGER,
+      transaction_id TEXT,
+      qr_code_url    TEXT,
+      created_at     TEXT    DEFAULT (datetime('now','localtime')),
+      paid_at        TEXT
+    )
+  `);
 }
 
 // ==========================================

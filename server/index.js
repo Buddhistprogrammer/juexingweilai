@@ -26,6 +26,10 @@ const PORT = process.env.PORT || 3002;
 
 // 中间件
 app.use(cors());
+
+// 微信支付回调需要原始 body 验签，必须先于全局 json 解析（body-parser 通过 req._body 跳过重复解析）
+app.use('/api/pay', express.raw({ type: 'application/json' }));
+
 app.use(express.json());
 
 // 请求日志
