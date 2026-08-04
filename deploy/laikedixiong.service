@@ -1,0 +1,18 @@
+[Unit]
+Description=来客兄弟 CMS - AI赋能实体门店
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/laikedixiong-site/server
+EnvironmentFile=/opt/laikedixiong-site/deploy/.env
+ExecStart=/usr/bin/node /opt/laikedixiong-site/server/index.js
+Restart=always
+RestartSec=5
+StandardOutput=append:/opt/laikedixiong-site/logs/app.log
+StandardError=append:/opt/laikedixiong-site/logs/error.log
+
+[Install]
+WantedBy=multi-user.target

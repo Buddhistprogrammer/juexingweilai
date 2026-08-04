@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>觉醒未来城 · 中国县域AI生态综合服务商 — 要么AI化，要么被AI化</title>
+<meta name="description" content="觉醒未来城是来客兄弟AI集团旗下品牌，中国县域AI生态综合服务商。打通政府+企业+人才+硬件+资本五端，覆盖全国2800区县，一城一主，每城一个AI赋能中心。">
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(180deg, #eef6ff 0%, #f5f0ff 50%, #f0f8ff 100%); background-attachment: fixed; color: #1e293b; line-height: 1.7;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; font-family: inherit; border: none; outline: none; }
+
+/* ========== Utilities ========== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1, #60a5fa, #10b981);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px; border-radius: 50px; font-size: 1rem; font-weight: 600;
+  transition: all 0.3s ease; white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: #fff; box-shadow: 0 4px 20px rgba(79,70,229,0.35);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,99,235,0.35); }
+.btn-outline {
+  border: 2px solid rgba(59,130,246,0.4); color: #3b82f6; background: transparent;
+}
+.btn-outline:hover { background: rgba(59,130,246,0.06); transform: translateY(-2px); }
+.btn-white { background: #fff; color: #f0f5fa; font-weight: 700; }
+.btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(99,102,241,0.15); }
+
+.section-tag {
+  display: inline-block; padding: 6px 16px; border-radius: 50px;
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;
+  background: rgba(79,70,229,0.15); color: #6366f1; margin-bottom: 16px;
+}
+.section-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; line-height: 1.3; }
+.section-subtitle { font-size: 1.1rem; color: #64748b; max-width: 600px; }
+
+/* ========== Nav ========== */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(148,163,184,0.2);
+  padding: 16px 0; transition: all 0.3s ease;
+}
+.nav .container { display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+.nav-logo span { color: #3b82f6; }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a { font-size: 0.9rem; font-weight: 500; color: #64748b; transition: color 0.2s; }
+.nav-links a:hover { color: #fff; }
+.city-selector {
+  padding: 8px 16px; border-radius: 50px; background: rgba(79,70,229,0.15);
+  border: 1px solid rgba(99,102,241,0.3); color: #6366f1; font-size: 0.85rem;
+  font-weight: 600; cursor: pointer; transition: all 0.3s;
+}
+.city-selector:hover { background: rgba(79,70,229,0.25); }
+.nav-mobile-toggle { display: none; background: none; color: #fff; font-size: 1.5rem; }
+
+/* ========== Hero ========== */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  position: relative; overflow: hidden; padding-top: 80px;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+}
+.hero-bg::before {
+  content: ''; position: absolute; top: -40%; left: -20%;
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+  border-radius: 50%; animation: float 12s ease-in-out infinite;
+}
+.hero-bg::after {
+  content: ''; position: absolute; bottom: -30%; right: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+  border-radius: 50%; animation: float 15s ease-in-out infinite reverse;
+}
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -30px); }
+  66% { transform: translate(-20px, 20px); }
+}
+.hero .container { position: relative; z-index: 1; }
+.hero-content { max-width: 720px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 20px; border-radius: 50px;
+  background: rgba(79,70,229,0.15); border: 1px solid rgba(99,102,241,0.3);
+  font-size: 0.85rem; color: #818cf8; margin-bottom: 32px;
+}
+.hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.hero h1 { font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.02em; }
+.hero h1 .highlight {
+  background: linear-gradient(135deg, #6366f1, #60a5fa, #10b981);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p { font-size: 1.2rem; color: #64748b; margin-bottom: 40px; line-height: 1.8; }
+.hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+.hero-stats { display: flex; gap: 48px; margin-top: 60px; }
+.hero-stat h3 { font-size: 2rem; font-weight: 800; color: #3b82f6; }
+.hero-stat p { font-size: 0.85rem; color: #94a3b8; margin: 0; }
+
+/* ========== Pain Points ========== */
+.pain-points {
+  padding: 100px 0; background: #f6f9fc;
+}
+.pp-header { text-align: center; margin-bottom: 60px; }
+.pp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 1100px; margin: 0 auto; }
+.pp-col h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #6366f1; }
+.pp-col .pp-item {
+  display: flex; gap: 16px; padding: 16px 0;
+  border-bottom: 1px solid rgba(148,163,184,0.2);
+}
+.pp-col .pp-item:last-child { border-bottom: none; }
+.pp-item .pp-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+  background: rgba(79,70,229,0.1); color: #6366f1;
+}
+.pp-item .pp-body h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+.pp-item .pp-body p { font-size: 0.85rem; color: #64748b; line-height: 1.6; }
+.pp-solve {
+  text-align: center; margin-top: 40px;
+  font-size: 1.1rem; font-weight: 600; color: #6366f1;
+  padding: 20px; background: rgba(79,70,229,0.06); border-radius: 16px;
+}
+
+/* ========== Why / 五大唯一 ========== */
+.diff-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.diff-card {
+  background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px;
+  padding: 28px 20px; text-align: center; transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.diff-card:hover { transform: translateY(-4px); border-color: rgba(99,102,241,0.3); box-shadow: 0 20px 40px rgba(99,102,241,0.1); }
+.diff-card .num { font-size: 2rem; font-weight: 900; color: #6366f1; opacity: 0.3; margin-bottom: 8px; }
+.diff-card h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 6px; line-height: 1.4; }
+.diff-card p { font-size: 0.8rem; color: #64748b; line-height: 1.5; }
+
+/* ========== Four Centers ========== */
+.centers { padding: 100px 0; background: #f6f9fc; }
+.centers-header { text-align: center; margin-bottom: 60px; }
+.centers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.center-card {
+  background: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px;
+  padding: 36px 24px; text-align: center; transition: all 0.3s ease;
+  position: relative; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.center-card:hover { transform: translateY(-4px); border-color: rgba(99,102,241,0.3); box-shadow: 0 20px 40px rgba(99,102,241,0.1); }
+.center-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 4px; background: linear-gradient(90deg, #4f46e5, #2563eb);
+  transform: scaleX(0); transition: transform 0.3s;
+}
+.center-card:hover::before { transform: scaleX(1); }
+.center-icon { font-size: 2.5rem; margin-bottom: 16px; }
+.center-card h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 12px; }
+.center-card p { font-size: 0.85rem; color: #64748b; line-height: 1.7; }
+.center-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 16px; }
+.center-tags span { font-size: 0.75rem; padding: 4px 10px; border-radius: 50px; background: rgba(79,70,229,0.1); color: #6366f1; }
+.ai-test {
+  padding: 100px 0; position: relative;
+}
+.ai-test::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 60px; background: linear-gradient(to bottom, transparent, rgba(79,70,229,0.3));
+}
+.ai-test-card {
+  background: linear-gradient(145deg, rgba(79,70,229,0.08), rgba(59,130,246,0.05));
+  border: 1px solid rgba(99,102,241,0.15); border-radius: 24px; padding: 60px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.ai-test-card::after {
+  content: ''; position: absolute; top: -50%; right: -20%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.ai-test-card > * { position: relative; z-index: 1; }
+.ai-test-card h2 { font-size: 2.2rem; margin-bottom: 12px; }
+.ai-test-card .sub { color: #64748b; margin-bottom: 32px; font-size: 1.05rem; }
+
+.ai-quiz { max-width: 680px; margin: 0 auto; text-align: left; }
+.ai-quiz .q-progress {
+  display: flex; gap: 8px; margin-bottom: 32px;
+}
+.ai-quiz .q-progress span {
+  flex: 1; height: 4px; border-radius: 2px; background: #cbd5e1;
+  transition: background 0.3s;
+}
+.ai-quiz .q-progress span.done { background: linear-gradient(90deg, #4f46e5, #2563eb); }
+.ai-quiz .q-progress span.active { background: rgba(99,102,241,0.4); }
+.ai-quiz .q-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; }
+.ai-quiz .q-options { display: flex; flex-direction: column; gap: 12px; }
+.ai-quiz .q-option {
+  padding: 16px 20px; border-radius: 12px;
+  background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  color: #475569; font-size: 1rem; text-align: left;
+  transition: all 0.2s; cursor: pointer;
+}
+.ai-quiz .q-option:hover {
+  background: rgba(79,70,229,0.1); border-color: rgba(99,102,241,0.4);
+  color: #fff;
+}
+.ai-quiz .q-option.selected {
+  background: rgba(79,70,229,0.2); border-color: #4f46e5; color: #fff;
+}
+
+.ai-result { display: none; text-align: center; padding: 20px 0; }
+.ai-result .score-circle {
+  width: 160px; height: 160px; border-radius: 50%;
+  background: conic-gradient(#4f46e5 var(--score), #f1f5f9 var(--score));
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;
+  position: relative;
+}
+.ai-result .score-circle::before {
+  content: ''; position: absolute; inset: 12px; border-radius: 50%;
+  background: #f0f5fa;
+}
+.ai-result .score-inner { position: relative; z-index: 1; }
+.ai-result .score-inner .val { font-size: 2.5rem; font-weight: 900; }
+.ai-result .score-inner .unit { font-size: 0.9rem; color: #64748b; }
+.ai-result h3 { font-size: 1.5rem; margin-bottom: 8px; }
+.ai-result .result-desc { color: #64748b; margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; }
+.ai-result .share-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ========== Modules ========== */
+.modules {
+  padding: 100px 0;
+}
+.modules-header { text-align: center; margin-bottom: 60px; }
+.modules-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+.module-card {
+  background: #ffffff; border: 1px solid #e2e8f0;
+  border-radius: 20px; padding: 36px 28px; transition: all 0.3s ease;
+  position: relative; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.module-card:hover {
+  border-color: rgba(99,102,241,0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(99,102,241,0.1);
+}
+.module-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: linear-gradient(90deg, #4f46e5, #2563eb);
+  transform: scaleX(0); transition: transform 0.3s;
+}
+.module-card:hover::before { transform: scaleX(1); }
+.module-card .icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 20px;
+}
+.module-card .icon.purple { background: rgba(79,70,229,0.15); color: #6366f1; }
+.module-card .icon.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.module-card .icon.green { background: rgba(52,211,153,0.15); color: #10b981; }
+.module-card .icon.amber { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.module-card .icon.rose { background: rgba(244,114,182,0.15); color: #f472b6; }
+.module-card .icon.cyan { background: rgba(34,211,238,0.15); color: #22d3ee; }
+.module-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+.module-card p { font-size: 0.9rem; color: #64748b; margin-bottom: 20px; line-height: 1.6; }
+.module-card .card-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.9rem; font-weight: 600; color: #3b82f6;
+  transition: gap 0.3s;
+}
+.module-card .card-btn:hover { gap: 12px; }
+
+/* ========== Syllabus ========== */
+.syllabus {
+  padding: 100px 0; background: #f6f9fc;
+}
+.syllabus-header { text-align: center; margin-bottom: 60px; }
+.timeline { max-width: 800px; margin: 0 auto; position: relative; }
+.timeline::before {
+  content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+  width: 1px; background: rgba(59,130,246,0.2); transform: translateX(-50%);
+}
+.timeline-item { display: flex; margin-bottom: 40px; position: relative; }
+.timeline-item:nth-child(odd) { flex-direction: row; }
+.timeline-item:nth-child(even) { flex-direction: row-reverse; }
+.timeline-dot {
+  position: absolute; left: 50%; top: 28px; transform: translate(-50%, -50%);
+  width: 14px; height: 14px; border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  box-shadow: 0 0 20px rgba(59,130,246,0.3); z-index: 1;
+}
+.timeline-content {
+  width: 44%; padding: 28px; border-radius: 16px;
+  background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.timeline-item:nth-child(odd) .timeline-content { margin-right: auto; }
+.timeline-item:nth-child(even) .timeline-content { margin-left: auto; }
+.timeline-content .num { font-size: 0.8rem; color: #2563eb; font-weight: 700; margin-bottom: 8px; }
+.timeline-content h4 { font-size: 1.1rem; margin-bottom: 8px; }
+.timeline-content p { font-size: 0.9rem; color: #64748b; }
+
+/* ========== Instructors ========== */
+.instructors {
+  padding: 100px 0;
+}
+.instructors-header { text-align: center; margin-bottom: 60px; }
+.instructors-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 900px; margin: 0 auto;
+}
+.instructor-card {
+  display: flex; gap: 24px; padding: 32px; border-radius: 20px;
+  background: #ffffff; border: 1px solid #e2e8f0;
+  transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.instructor-card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-4px); }
+.instructor-avatar {
+  width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; font-weight: 800;
+}
+.instructor-avatar.purple { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+.instructor-avatar.blue { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+.instructor-info h4 { font-size: 1.1rem; margin-bottom: 4px; }
+.instructor-info .role { font-size: 0.85rem; color: #3b82f6; margin-bottom: 10px; }
+.instructor-info .bio { font-size: 0.88rem; color: #64748b; line-height: 1.7; }
+
+/* ========== Showroom ========== */
+.showroom {
+  padding: 100px 0; background: #f6f9fc;
+}
+.showroom-header { text-align: center; margin-bottom: 60px; }
+.showroom-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.showroom-item {
+  border-radius: 16px; overflow: hidden; aspect-ratio: 4/3;
+  background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; color: rgba(59,130,246,0.3); transition: all 0.3s;
+}
+.showroom-item:hover { border-color: rgba(59,130,246,0.3); }
+.showroom-item.large { grid-column: span 2; grid-row: span 2; }
+
+/* ========== Pricing ========== */
+.pricing {
+  padding: 100px 0;
+}
+.pricing-header { text-align: center; margin-bottom: 60px; }
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; margin: 0 auto;
+}
+.pricing-card {
+  padding: 40px 32px; border-radius: 20px;
+  background: #ffffff; border: 1px solid #e2e8f0;
+  text-align: center; transition: all 0.3s ease; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.featured {
+  border-color: rgba(99,102,241,0.4); background: linear-gradient(145deg, rgba(99,102,241,0.05), rgba(59,130,246,0.03));
+  box-shadow: 0 20px 60px rgba(99,102,241,0.12);
+}
+.pricing-card .badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  padding: 6px 20px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;
+  background: linear-gradient(135deg, #4f46e5, #2563eb); color: #fff;
+}
+.pricing-card h4 { font-size: 1.1rem; margin-bottom: 16px; }
+.pricing-card .price { font-size: 2.5rem; font-weight: 900; margin-bottom: 4px; }
+.pricing-card .price-period { font-size: 0.9rem; color: #94a3b8; margin-bottom: 24px; }
+.pricing-card .features { list-style: none; text-align: left; margin-bottom: 28px; }
+.pricing-card .features li {
+  padding: 8px 0; font-size: 0.9rem; color: #64748b;
+  display: flex; align-items: center; gap: 10px;
+}
+.pricing-card .features li::before {
+  content: '✓'; color: #10b981; font-weight: 700; flex-shrink: 0;
+}
+
+/* ========== FAQ ========== */
+.faq {
+  padding: 100px 0; background: #f6f9fc;
+}
+.faq-header { text-align: center; margin-bottom: 60px; }
+.faq-list { max-width: 700px; margin: 0 auto; }
+.faq-item {
+  border-bottom: 1px solid #e2e8f0;
+}
+.faq-q {
+  width: 100%; padding: 24px 0; text-align: left; background: none;
+  color: #1e293b; font-size: 1.05rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+}
+.faq-q .arrow { font-size: 0.8rem; color: #3b82f6; transition: transform 0.3s; }
+.faq-q.open .arrow { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease;
+  font-size: 0.95rem; color: #64748b; line-height: 1.8;
+}
+.faq-a.open { max-height: 300px; padding-bottom: 24px; }
+
+/* ========== CTA Banner ========== */
+.cta-banner {
+  padding: 80px 0; text-align: center;
+}
+.cta-banner-inner {
+  background: linear-gradient(145deg, rgba(79,70,229,0.1), rgba(59,130,246,0.08));
+  border: 1px solid rgba(99,102,241,0.2); border-radius: 24px;
+  padding: 60px 40px; position: relative; overflow: hidden;
+}
+.cta-banner-inner::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 60%);
+}
+.cta-banner-inner > * { position: relative; z-index: 1; }
+.cta-banner h2 { font-size: 2.2rem; margin-bottom: 16px; }
+.cta-banner p { color: #64748b; margin-bottom: 32px; font-size: 1.1rem; }
+
+/* ========== Footer ========== */
+.footer {
+  padding: 60px 0 30px; border-top: 1px solid #e2e8f0;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  margin-bottom: 40px;
+}
+.footer-brand p { color: #94a3b8; font-size: 0.9rem; margin-top: 12px; }
+.footer-col h4 { font-size: 0.95rem; margin-bottom: 16px; }
+.footer-col a { display: block; font-size: 0.85rem; color: #94a3b8; padding: 4px 0; transition: color 0.2s; }
+.footer-col a:hover { color: #3b82f6; }
+.footer-bottom {
+  text-align: center; padding-top: 30px; border-top: 1px solid #e2e8f0;
+  font-size: 0.85rem; color: #94a3b8;
+}
+
+/* ========== Modal ========== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(15,23,42,0.5); backdrop-filter: blur(8px);
+  z-index: 2000; display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transition: all 0.3s;
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal {
+  background: #ffffff; border: 1px solid #cbd5e1; border-radius: 24px;
+  padding: 40px; max-width: 520px; width: 90%; max-height: 85vh; overflow-y: auto;
+  position: relative;
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px; width: 36px; height: 36px;
+  border-radius: 50%; background: #f1f5f9; color: #64748b;
+  font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: #cbd5e1; color: #fff; }
+.modal h3 { font-size: 1.5rem; margin-bottom: 8px; }
+.modal .sub { color: #64748b; margin-bottom: 24px; font-size: 0.9rem; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-size: 0.85rem; color: #64748b; margin-bottom: 6px; font-weight: 600; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 12px 16px; border-radius: 12px;
+  background: #f8fafc; border: 1px solid #cbd5e1;
+  color: #1e293b; font-size: 0.95rem; font-family: inherit;
+  transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: #2563eb;
+}
+.form-group select option { background: #ffffff; color: #1e293b; }
+.form-group textarea { resize: vertical; min-height: 80px; }
+.modal .btn { width: 100%; justify-content: center; }
+.form-success {
+  display: none; text-align: center; padding: 40px 20px;
+}
+.form-success .check { font-size: 3rem; margin-bottom: 16px; }
+.form-success h4 { font-size: 1.3rem; margin-bottom: 8px; }
+
+/* ========== Why ========== */
+.why {
+  padding: 100px 0; background: #f6f9fc;
+}
+.why-header { text-align: center; margin-bottom: 60px; }
+.why-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+}
+.why-card {
+  background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px;
+  padding: 32px 24px; text-align: center; transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.why-card:hover {
+  transform: translateY(-4px); border-color: rgba(99,102,241,0.3);
+  box-shadow: 0 20px 40px rgba(99,102,241,0.1);
+}
+.why-icon {
+  width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; background: rgba(79,70,229,0.1);
+}
+.why-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+.why-card p { font-size: 0.88rem; color: #64748b; line-height: 1.7; }
+
+/* ========== Quiz Type ========== */
+.quiz-type {
+  display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+  max-width: 680px; margin: 0 auto;
+}
+.type-card {
+  flex: 1; min-width: 240px; padding: 32px 24px; border-radius: 16px; cursor: pointer;
+  background: #ffffff; border: 2px solid #e2e8f0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: all 0.3s;
+}
+.type-card:hover {
+  border-color: rgba(99,102,241,0.5); transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(99,102,241,0.12);
+}
+.type-icon { font-size: 2.4rem; }
+.type-card strong { font-size: 1.15rem; color: #1e293b; }
+.type-card small { font-size: 0.85rem; color: #94a3b8; }
+
+/* ========== Poster ========== */
+.poster-box {
+  max-width: 300px; margin: 24px auto; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 12px 40px rgba(79,70,229,0.25);
+}
+.poster-box img { width: 100%; display: block; }
+
+/* ========== Form Options ========== */
+.opt-group { display: flex; flex-wrap: wrap; gap: 10px; }
+.opt-item {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+  border-radius: 50px; border: 1px solid #cbd5e1; background: #f8fafc;
+  font-size: 0.9rem; color: #475569; cursor: pointer; user-select: none;
+  transition: all 0.2s;
+}
+.opt-item:hover { border-color: rgba(99,102,241,0.4); }
+.opt-item.selected {
+  background: rgba(79,70,229,0.12); border-color: #4f46e5;
+  color: #4f46e5; font-weight: 600;
+}
+.opt-item input { display: none; }
+
+/* ========== Float Consult ========== */
+.float-consult {
+  position: fixed; right: 24px; bottom: 24px; z-index: 1500;
+  padding: 14px 24px; border-radius: 50px; font-weight: 700;
+  background: linear-gradient(135deg, #4f46e5, #2563eb); color: #fff;
+  box-shadow: 0 8px 30px rgba(79,70,229,0.4); cursor: pointer;
+  transition: transform 0.3s;
+}
+.float-consult:hover { transform: translateY(-3px); }
+
+/* ========== Responsive ========== */
+@media (max-width: 960px) {
+  .hero h1 { font-size: 2.5rem; }
+  .modules-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+  .instructors-grid { grid-template-columns: 1fr; }
+  .showroom-gallery { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .timeline::before { left: 24px; }
+  .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; }
+  .timeline-dot { left: 24px; }
+  .timeline-content { width: calc(100% - 60px); margin-left: 60px !important; }
+  .ai-test-card { padding: 32px 20px; }
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+  .diff-grid { grid-template-columns: repeat(3, 1fr); }
+  .centers-grid { grid-template-columns: repeat(2, 1fr); }
+  .pp-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+@media (max-width: 640px) {
+  .hero h1 { font-size: 2rem; }
+  .hero-stats { flex-direction: column; gap: 24px; }
+  .modules-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: block; }
+  .instructor-card { flex-direction: column; align-items: center; text-align: center; }
+  .showroom-gallery { grid-template-columns: 1fr 1fr; }
+  .showroom-item.large { grid-column: span 1; grid-row: span 1; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-ctas { flex-direction: column; }
+  .hero-ctas .btn { text-align: center; justify-content: center; }
+  .cta-banner-inner { padding: 40px 20px; }
+  .why-grid { grid-template-columns: 1fr; }
+  .diff-grid { grid-template-columns: 1fr; }
+  .centers-grid { grid-template-columns: 1fr; }
+  .float-consult { right: 16px; bottom: 16px; padding: 12px 18px; font-size: 0.9rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="nav">
+  <div class="container">
+    <a href="#" class="nav-logo">觉醒<span>未来城</span></a>
+    <div class="nav-links">
+      <a href="#pain-points">行业痛点</a>
+      <a href="#why">五大唯一</a>
+      <a href="#modules">核心服务</a>
+      <a href="#centers">四大中心</a>
+      <a href="#ai-test">含AI量检测</a>
+      <a href="#pricing">价格</a>
+      <select class="city-selector" id="citySelect" onchange="switchCity(this.value)">
+        <option value="beijing">北京</option>
+        <option value="shanghai">上海</option>
+        <option value="shenzhen" selected>深圳</option>
+        <option value="guangzhou">广州</option>
+        <option value="hangzhou">杭州</option>
+        <option value="chengdu">成都</option>
+        <option value="wuhan">武汉</option>
+        <option value="nanjing">南京</option>
+      </select>
+    </div>
+    <button class="nav-mobile-toggle" onclick="toggleMobileNav()">☰</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span> <span id="badgeText" data-c="hero.badge">来客兄弟AI集团 · 觉醒未来城</span> · <span id="heroCityName">深圳</span>
+      </div>
+      <h1 data-c-html="hero.title">要么<span class="highlight">AI化</span>，<br>要么被<span class="highlight">AI化</span></h1>
+      <p data-c-html="hero.subtitle">觉醒未来城 — 中国县域AI生态综合服务商。打通"政府+企业+人才+硬件+资本"五端，覆盖全国2800区县，<br>一个AI觉醒未来城，带动一座城全面AI化。</p>
+      <div class="hero-ctas">
+        <a href="#ai-test" class="btn btn-primary" data-c="hero.cta1">免费检测含AI量 →</a>
+        <button class="btn btn-outline" onclick="openModal('visit')" data-c="hero.cta2">预约参观展厅</button>
+      </div>
+      <div class="hero-stats" id="heroStats">
+        <div class="hero-stat"><h3>2800+</h3><p>覆盖区县</p></div>
+        <div class="hero-stat"><h3>50+</h3><p>已签约城主</p></div>
+        <div class="hero-stat"><h3>100+</h3><p>顶级投资机构</p></div>
+        <div class="hero-stat"><h3>10万㎡</h3><p>教培就业基地</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAIN POINTS: 三缺一散 ===== -->
+<section class="pain-points" id="pain-points">
+  <div class="container">
+    <div class="pp-header">
+      <span class="section-tag">行业痛点</span>
+      <h2 class="section-title" data-c="painPoints.title">每一个区县，都需要一个AI赋能中心</h2>
+      <p class="section-subtitle" style="margin:0 auto" data-c="painPoints.subtitle">AI浪潮已至，企业与县域均面临严峻挑战——"三缺一散"</p>
+    </div>
+    <div class="pp-grid">
+      <div class="pp-col" id="ppCol1">
+        <h3>🏢 企业三大痛点</h3>
+        <div class="pp-item">
+          <div class="pp-icon">📡</div>
+          <div class="pp-body"><h4>信息不对称</h4><p>地方企业难以获取前沿AI资讯与技术趋势，错失转型先机</p></div>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">🧩</div>
+          <div class="pp-body"><h4>资源难整合</h4><p>AI人才、技术、资本分散，难以高效应用落地</p></div>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">🧭</div>
+          <div class="pp-body"><h4>增长无方向</h4><p>缺乏系统化AI转型策略与落地路径，有工具却不知怎么用</p></div>
+        </div>
+      </div>
+      <div class="pp-col" id="ppCol2">
+        <h3>🏘️ 县域四大痛点 —「三缺一散」</h3>
+        <div class="pp-item">
+          <div class="pp-icon">👤</div>
+          <div class="pp-body"><h4>缺实用性人才</h4><p>本地AI专业人才匮乏，无法支撑产业升级</p></div>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">🧠</div>
+          <div class="pp-body"><h4>缺前沿认知</h4><p>对AI发展趋势与商业应用缺乏深刻洞察</p></div>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">🔗</div>
+          <div class="pp-body"><h4>缺生态资源</h4><p>技术、资本、供应链等产业要素难以聚合</p></div>
+        </div>
+        <div class="pp-item">
+          <div class="pp-icon">💨</div>
+          <div class="pp-body"><h4>产业转型力量分散</h4><p>传统产业布局分散，难以形成协同效应和规模优势</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="pp-solve" data-c-html="painPoints.solve">💡 觉醒未来城 — 以"一中心"破解"三缺一散"，一座城一个AI赋能中心</div>
+  </div>
+</section>
+
+<!-- ===== MODULES ===== -->
+<section class="modules" id="modules">
+  <div class="container">
+    <div class="modules-header">
+      <span class="section-tag">六大核心模块</span>
+      <h2 class="section-title" data-c="modules.title">一站式AI赋能服务</h2>
+      <p class="section-subtitle" style="margin:0 auto" data-c="modules.subtitle">从社群到培训，从沙龙到游学，全方位助力实体门店AI化转型</p>
+    </div>
+    <div class="modules-grid" id="modulesGrid">
+      <div class="module-card">
+        <div class="icon purple">🤝</div>
+        <h3>加入AI学联社社群</h3>
+        <p>加入当地免费AI学联社，与同城实体店主交流AI应用经验，获取最新AI工具推荐与案例分享。</p>
+        <button class="card-btn" onclick="openModal('community')">立即申请 →</button>
+      </div>
+      <div class="module-card">
+        <div class="icon blue">🎤</div>
+        <h3>参加AI沙龙</h3>
+        <p>线下AI主题沙龙，行业专家分享AI赋能实体门店实战案例，面对面交流，前沿洞察一手掌握。</p>
+        <button class="card-btn" onclick="openModal('salon')">预约席位 →</button>
+      </div>
+      <div class="module-card">
+        <div class="icon green">✈️</div>
+        <h3>参加AI游学</h3>
+        <p>深度探访AI标杆企业，沉浸式体验AI应用场景，拓展视野，链接高端资源与人脉。</p>
+        <button class="card-btn" onclick="openModal('tour')">报名游学 →</button>
+      </div>
+      <div class="module-card">
+        <div class="icon amber">🏛️</div>
+        <h3>参观未来城展厅</h3>
+        <p>亲临未来城AI展厅，体验最新AI产品与应用场景，感受科技如何重塑实体商业。</p>
+        <button class="card-btn" onclick="openModal('visit')">预约参观 →</button>
+      </div>
+      <div class="module-card">
+        <div class="icon rose">📚</div>
+        <h3>AI普及线上课</h3>
+        <p>为零基础实体店主量身打造的AI入门课程，图文+视频，碎片时间轻松学，快速上手AI工具。</p>
+        <button class="card-btn" onclick="openModal('course')">免费报名 →</button>
+      </div>
+      <div class="module-card">
+        <div class="icon cyan">🏢</div>
+        <h3>公益AI入企培训</h3>
+        <p>专业AI讲师团队走进企业，为团队提供定制化AI培训，助力企业全面拥抱AI时代。</p>
+        <button class="card-btn" onclick="openModal('enterprise')">申请培训 →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOUR CENTERS ===== -->
+<section class="centers" id="centers">
+  <div class="container">
+    <div class="centers-header">
+      <span class="section-tag">四大中心</span>
+      <h2 class="section-title" data-c="centers.title">构建完整AI赋能实体生态</h2>
+      <p class="section-subtitle" style="margin:0 auto" data-c="centers.subtitle">从启蒙到落地、从展示到培训，一站式覆盖AI赋能全链路</p>
+    </div>
+    <div class="centers-grid" id="centersGrid">
+      <div class="center-card">
+        <div class="center-icon">🏛️</div>
+        <h4>产业赋能展示中心</h4>
+        <p>以"一中心"破解"三缺一散"，通过启蒙教育实现认知突围、通过产业落地实现价值重构、通过生态建设实现链接未来。</p>
+        <div class="center-tags"><span>认知突围</span><span>价值重构</span><span>生态链接</span></div>
+      </div>
+      <div class="center-card">
+        <div class="center-icon">🏭</div>
+        <h4>企业数字化转型促进中心</h4>
+        <p>提供AI商业换脑、AI工具、技术咨询与转型路径规划，帮助企业实现全链路AI化。</p>
+        <div class="center-tags"><span>商业换脑</span><span>全链路AI化</span><span>技术咨询</span></div>
+      </div>
+      <div class="center-card">
+        <div class="center-icon">🚀</div>
+        <h4>OPC青创社区·AI人才培育基地</h4>
+        <p>给项目、给技术、给资源、给订单的培训+陪跑+陪伴全周期赋能。九大类100+岗位，因才施教，适岗就业。</p>
+        <div class="center-tags"><span>培训陪跑</span><span>100+岗位</span><span>包教包会包就业</span></div>
+      </div>
+      <div class="center-card">
+        <div class="center-icon">🤖</div>
+        <h4>AI智创产品体验基地</h4>
+        <p>集中展示最前沿的AI具身智能硬件、脑机接口等，实现"现场体验 → 源头资源对接"闭环。</p>
+        <div class="center-tags"><span>具身智能</span><span>脑机接口</span><span>现场体验</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SYLLABUS ===== -->
+<section class="syllabus" id="syllabus">
+  <div class="container">
+    <div class="syllabus-header">
+      <span class="section-tag">课程体系</span>
+      <h2 class="section-title" data-c="syllabus.title">AI赋能实体门店 · 四大课程模块</h2>
+      <p class="section-subtitle" style="margin:0 auto" data-c="syllabus.subtitle">从认知升级到实战落地，覆盖实体门店AI化全流程</p>
+    </div>
+    <div class="timeline" id="syllabusTimeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="num">Module 01</div>
+          <h4>认知篇 · 实体门店为什么要AI化</h4>
+          <p>2025-2026实体门店生存现状；AI工具全景图——哪些能帮你省钱、省时间、多赚钱；"要么AI化，要么被AI化"背后的逻辑。</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="num">Module 02</div>
+          <h4>实操篇 · 门店AI工具落地指南</h4>
+          <p>AI写文案/做海报/剪视频：一个人干三个人的活；AI客服+自动回复：24小时不休息的"店员"；AI数据分析：看懂客流、库存、营收。</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="num">Module 03</div>
+          <h4>营销篇 · AI短视频+直播获客</h4>
+          <p>AI生成短视频脚本和素材；数字人直播带货入门；本地生活平台（抖音/美团）的AI投放策略。</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="num">Module 04</div>
+          <h4>进阶篇 · 一人公司 × AI</h4>
+          <p>AI帮你搭建私域社群；AI做客户管理和跟进；门店AI化的ROI计算。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INSTRUCTORS ===== -->
+<section class="instructors" id="instructors">
+  <div class="container">
+    <div class="instructors-header">
+      <span class="section-tag">讲师团队</span>
+      <h2 class="section-title" data-c="instructors.title">实战派讲师，而非空谈者</h2>
+      <p class="section-subtitle" style="margin:0 auto" data-c="instructors.subtitle">所有讲师均具备一线实体门店AI化实操经验</p>
+    </div>
+    <div class="instructors-grid" id="instructorsGrid">
+      <div class="instructor-card">
+        <div class="instructor-avatar purple">张</div>
+        <div class="instructor-info">
+          <h4>张旭光 教授</h4>
+          <p class="role">首席AI战略顾问 · 浙大系专家</p>
+          <p class="bio">浙江大学资深教授，AI与数字经济领域权威专家。为觉醒未来城提供顶层战略设计与学术智库支撑，深度参与县域AI生态构建。</p>
+        </div>
+      </div>
+      <div class="instructor-card">
+        <div class="instructor-avatar blue">王</div>
+        <div class="instructor-info">
+          <h4>阿里系 · 企业家智囊团</h4>
+          <p class="role">商业智库 · 实战赋能</p>
+          <p class="bio">前阿里高管及资深产品专家组成的实战导师团队，累计辅导500+实体门店完成AI化转型，对实体商业与AI融合有深刻洞察。</p>
+        </div>
+      </div>
+      <div class="instructor-card">
+        <div class="instructor-avatar purple">百</div>
+        <div class="instructor-info">
+          <h4>百位顶级投资人</h4>
+          <p class="role">AI投资基金百人荟 · 资本赋能</p>
+          <p class="bio">汇聚红杉、IDG、软银、云石等500+一线投资机构。优质城主项目可直达资本，每年2场城主项目闭门路演会。</p>
+        </div>
+      </div>
+      <div class="instructor-card">
+        <div class="instructor-avatar blue">千</div>
+        <div class="instructor-info">
+          <h4>千位链主实战智囊</h4>
+          <p class="role">词元私董会 · 一线经验链接</p>
+          <p class="bio">集结各行业链主企业实战专家，每月1次闭门会/战略会，为城主提供一线经营经验与跨区域合作商机对接。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY / 五大唯一 ===== -->
+<section class="why" id="why">
+  <div class="container">
+    <div class="why-header">
+      <span class="section-tag">五大唯一 · 不可复制</span>
+      <h2 class="section-title" data-c="why.title">为什么只有觉醒未来城能做到？</h2>
+      <p class="section-subtitle" style="margin:0 auto" data-c="why.subtitle">五个"唯一"，构建中国县域AI生态护城河</p>
+    </div>
+    <div class="diff-grid" id="diffGrid">
+      <div class="diff-card">
+        <div class="num">01</div>
+        <h4>打通五端</h4>
+        <p>唯一打通"政府+企业+人才+硬件+资本"五端，坐拥10万㎡教培考培就业基地，实现"包教包会包就业"全闭环</p>
+      </div>
+      <div class="diff-card">
+        <div class="num">02</div>
+        <h4>顶级背书</h4>
+        <p>唯一拥有张旭光教授、浙大系专家及阿里系等顶尖企业家及高管背书的生态平台</p>
+      </div>
+      <div class="diff-card">
+        <div class="num">03</div>
+        <h4>百人资本</h4>
+        <p>唯一汇聚百位顶级投资人，拥有AI投资基金百人荟及创业项目孵化体系的基金扶持</p>
+      </div>
+      <div class="diff-card">
+        <div class="num">04</div>
+        <h4>2800区县</h4>
+        <p>唯一覆盖全国2800个区县且一城一主排他经营的AI网络，"一区县一城主，锁区经营"</p>
+      </div>
+      <div class="diff-card">
+        <div class="num">05</div>
+        <h4>千位链主</h4>
+        <p>唯一拥有链主企业为核心的词元私董会，集结千位链主企业实战智囊，一线经验直接链接</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AI TEST ===== -->
+<section class="ai-test" id="ai-test">
+  <div class="container">
+    <div class="ai-test-card">
+      <span class="section-tag">互动测试</span>
+      <h2>你的「含<span class="gradient-text">AI量</span>」有多少？</h2>
+      <p class="sub">3分钟快速测试，了解你与企业当前的AI化程度，获取专属建议</p>
+
+      <div class="quiz-type" id="quizType">
+        <button class="type-card" onclick="startQuiz('personal')">
+          <span class="type-icon">🧑‍💼</span>
+          <strong>测我的含AI量</strong>
+          <small>个人版 · 8题</small>
+        </button>
+        <button class="type-card" onclick="startQuiz('company')">
+          <span class="type-icon">🏢</span>
+          <strong>测我们公司的含AI量</strong>
+          <small>企业版 · 8题</small>
+        </button>
+      </div>
+
+      <div class="ai-quiz" id="aiQuiz" style="display:none">
+        <div class="q-progress" id="qProgress"></div>
+        <div class="q-title" id="qTitle"></div>
+        <div class="q-options" id="qOptions"></div>
+      </div>
+
+      <div class="ai-result" id="aiResult">
+        <div class="score-circle" id="scoreCircle" style="--score:0%">
+          <div class="score-inner">
+            <div class="val gradient-text" id="scoreVal">0</div>
+            <div class="unit">AI指数</div>
+          </div>
+        </div>
+        <h3 id="resultTitle"></h3>
+        <p class="result-desc" id="resultDesc"></p>
+        <div class="poster-box"><img id="posterImg" alt="我的含AI量分享海报"></div>
+        <div class="share-btns">
+          <button class="btn btn-primary" onclick="shareResult()">分享我的含AI量</button>
+          <a class="btn btn-outline" id="downloadPoster" download="我的含AI量.png" style="text-decoration:none">保存海报</a>
+          <button class="btn btn-outline" onclick="resetQuiz()">重新测试</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SHOWROOM ===== -->
+<section class="showroom" id="showroom">
+  <div class="container">
+    <div class="showroom-header">
+      <span class="section-tag">觉醒未来城 · 展厅</span>
+      <h2 class="section-title" data-c="showroom.title">四大中心，沉浸式AI体验空间</h2>
+      <p class="section-subtitle" style="margin:0 auto" data-c="showroom.subtitle">覆盖AI认知→落地→人才→产品全链条，所见即所得</p>
+    </div>
+    <div class="showroom-gallery" id="showroomGallery">
+      <div class="showroom-item large" style="font-size:1rem;padding:24px;flex-direction:column;gap:12px;">
+        <span style="font-size:2.5rem;">🏛️</span>
+        <strong style="font-size:1.1rem;">产业赋能展示中心</strong>
+        <p style="font-size:0.85rem;color:#64748b;text-align:center;">AI启蒙教育 + 产业落地案例 + 生态建设蓝图，一站式认知突围</p>
+      </div>
+      <div class="showroom-item" style="font-size:1rem;padding:20px;flex-direction:column;gap:8px;">
+        <span style="font-size:2rem;">🏭</span>
+        <strong style="font-size:0.9rem;">企业数字化转型区</strong>
+        <p style="font-size:0.8rem;color:#64748b;text-align:center;">AI商业换脑·全链路工具</p>
+      </div>
+      <div class="showroom-item" style="font-size:1rem;padding:20px;flex-direction:column;gap:8px;">
+        <span style="font-size:2rem;">🚀</span>
+        <strong style="font-size:0.9rem;">OPC青创社区</strong>
+        <p style="font-size:0.8rem;color:#64748b;text-align:center;">100+岗位·培训即就业</p>
+      </div>
+      <div class="showroom-item" style="font-size:1rem;padding:20px;flex-direction:column;gap:8px;">
+        <span style="font-size:2rem;">🤖</span>
+        <strong style="font-size:0.9rem;">AI智创产品体验</strong>
+        <p style="font-size:0.8rem;color:#64748b;text-align:center;">具身智能·脑机接口</p>
+      </div>
+      <div class="showroom-item" style="font-size:1rem;padding:20px;flex-direction:column;gap:8px;">
+        <span style="font-size:2rem;">🎬</span>
+        <strong style="font-size:0.9rem;">AI漫剧创作基地</strong>
+        <p style="font-size:0.8rem;color:#64748b;text-align:center;">AI短视频批量生产</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <span class="section-tag">价格与席位</span>
+      <h2 class="section-title" data-c="pricing.title">从体验到深耕，多层级灵活选择</h2>
+      <p class="section-subtitle" style="margin:0 auto" data-c="pricing.subtitle">公益免费体验 + 系统课程 + 城主生态，满足不同阶段的需求</p>
+    </div>
+    <div class="pricing-grid" id="pricingGrid">
+      <div class="pricing-card">
+        <h4>🎤 公益体验</h4>
+        <div class="price">免费</div>
+        <div class="price-period">学联社 + 沙龙 + 入企培训</div>
+        <ul class="features">
+          <li>加入当地AI学联社社群</li>
+          <li>参加线下AI主题沙龙</li>
+          <li>AI工具现场演示与体验</li>
+          <li>公益免费AI入企培训</li>
+          <li>预约参观觉醒未来城展厅</li>
+        </ul>
+        <button class="btn btn-outline" style="width:100%" onclick="openModal('community')">免费加入 →</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="badge">🔥 最受欢迎</div>
+        <h4>📚 AI普及线上课</h4>
+        <div class="price">¥299</div>
+        <div class="price-period">原价 ¥599</div>
+        <ul class="features">
+          <li>8节系统AI课程（录播+直播）</li>
+          <li>实体门店AI化全流程</li>
+          <li>每周在线答疑直播</li>
+          <li>专属学员交流群</li>
+          <li>结业证书+AI工具包</li>
+          <li>优先参加线下沙龙+游学</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%" onclick="openModal('course')">立即报名</button>
+      </div>
+      <div class="pricing-card">
+        <h4>👑 区县城主</h4>
+        <div class="price" style="font-size:1.8rem">¥59.8万</div>
+        <div class="price-period">3年权益包 · 一区县一城主</div>
+        <ul class="features">
+          <li>区县独家经营授权书</li>
+          <li>区县AI一号位官方身份</li>
+          <li>浙大系+阿里系智库背书</li>
+          <li>2800+城主联盟+词元私董会</li>
+          <li>AI城主操作系统（价值50万/年）</li>
+          <li>总部全程陪跑·100%落地成功率</li>
+        </ul>
+        <button class="btn btn-outline" style="width:100%" onclick="openConsult()">了解城主权益 →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-header">
+      <span class="section-tag">常见问题</span>
+      <h2 class="section-title" data-c="faq.title">你可能想了解的</h2>
+    </div>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">觉醒未来城是什么？<span class="arrow">+</span></button>
+        <div class="faq-a">觉醒未来城是来客兄弟AI集团旗下的中国县域AI生态综合服务商，统一对外品牌。集团所有课程、软件、硬件、应用场景解决方案全部装入"未来城"，实现统一展示、销售、服务。核心使命：推动中国企业全面AI化。</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">"一城一主"是什么意思？<span class="arrow">+</span></button>
+        <div class="faq-a">每个区县只授权一位城主（区县AI·一号位），拥有区域独家经营权。总部官网公示城主信息，不开放第二家经营资格，确保"一区县一城主"排他经营，让你从"区域经营者"升级为"生态构建者"。</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">加入AI学联社社群收费吗？<span class="arrow">+</span></button>
+        <div class="faq-a">完全免费。按城市建群，群内分享AI工具、案例和本地活动信息。学联社是觉醒未来城的线上公益赋能中心。</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">成为城主需要什么条件？<span class="arrow">+</span></button>
+        <div class="faq-a">四大必备条件：①企业年营收3000万元以上 ②拥有本地区工商联及商协会资源 ③具备与地方政府沟通协调的畅通渠道 ④在当地拥有良好商业信誉。还需要对AI行业有坚定信念、有资源人脉和利他心。</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">沙龙和游学有什么区别？<span class="arrow">+</span></button>
+        <div class="faq-a">沙龙是2-3小时的线下分享活动（免费/低价）；游学是1-2天的深度参访学习，含标杆企业参观、实操演练。城主还享有3次AI高端游学名额，实地考察全球顶尖AI企业。</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">"含AI量"检测准确吗？<span class="arrow">+</span></button>
+        <div class="faq-a">这是一个有趣的自我评估工具，分为个人版和企业版，各8道题。结果仅供参考，如果含AI量偏低，欢迎加入学联社或报名课程提升！</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">预约后多久有人联系？<span class="arrow">+</span></button>
+        <div class="faq-a">提交后1个工作日内，属地城市负责人会通过电话或微信联系您。如涉及城主咨询，会有总部招商团队专属对接。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA BANNER ===== -->
+<section class="cta-banner">
+  <div class="container">
+    <div class="cta-banner-inner">
+      <h2 data-c-html="cta.title">一座城的AI觉醒，从你开始</h2>
+      <p data-c="cta.subtitle">留下联系方式，获取专属AI化转型建议，及最新沙龙活动与城主招募通知</p>
+      <form id="quickForm" onsubmit="submitQuickForm(event)" style="max-width:500px;margin:0 auto;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+        <input type="text" placeholder="你的姓名" required style="padding:14px 20px;border-radius:50px;background:#e2e8f0;border:1px solid rgba(255,255,255,0.12);color:#1e293b;font-size:0.95rem;min-width:140px;flex:1;">
+        <input type="tel" placeholder="手机号码" required style="padding:14px 20px;border-radius:50px;background:#e2e8f0;border:1px solid rgba(255,255,255,0.12);color:#1e293b;font-size:0.95rem;min-width:160px;flex:1;">
+        <button type="submit" class="btn btn-white">免费咨询 →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" data-c-html="footer.brand">觉醒<span>未来城</span></div>
+        <p data-c-html="footer.desc">来客兄弟AI集团旗下品牌 · 中国县域AI生态综合服务商<br>让每座城市都因AI而觉醒，让每一个企业都因AI而进化</p>
+      </div>
+      <div class="footer-col">
+        <h4>核心服务</h4>
+        <a href="#" onclick="openModal('community')">AI学联社社群</a>
+        <a href="#" onclick="openModal('salon')">AI沙龙</a>
+        <a href="#" onclick="openModal('tour')">AI游学</a>
+        <a href="#" onclick="openModal('course')">线上课程</a>
+      </div>
+      <div class="footer-col">
+        <h4>关于觉醒未来城</h4>
+        <a href="#why">五大唯一</a>
+        <a href="#centers">四大中心</a>
+        <a href="#showroom">未来城展厅</a>
+        <a href="#pricing">城主权益</a>
+      </div>
+      <div class="footer-col">
+        <h4>全国城市</h4>
+        <a href="#" onclick="switchCity('beijing')">北京</a>
+        <a href="#" onclick="switchCity('shanghai')">上海</a>
+        <a href="#" onclick="switchCity('shenzhen')">深圳</a>
+        <a href="#" onclick="switchCity('guangzhou')">广州</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-c="footer.copyright">&copy; 2026 觉醒未来城 · 来客兄弟AI集团旗下品牌 · 中国数商科技 · 推动中国企业全面AI化</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== BOOKING MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalForm">
+      <h3 id="modalTitle">预约申请</h3>
+      <p class="sub" id="modalSub">请填写以下信息，我们将尽快与您联系</p>
+      <form id="bookingForm" onsubmit="submitBooking(event)">
+        <input type="hidden" id="bookingType" value="">
+        <div id="dynamicFields"></div>
+        <button type="submit" class="btn btn-primary">提交申请 →</button>
+      </form>
+    </div>
+    <div class="form-success" id="formSuccess">
+      <div class="check">✅</div>
+      <h4>提交成功！</h4>
+      <p style="color:#64748b">我们将在24小时内与您联系，请保持手机畅通。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONSULT MODAL ===== -->
+<div class="modal-overlay" id="consultOverlay" onclick="closeConsult(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeConsult()">✕</button>
+    <h3>免费咨询</h3>
+    <p class="sub">留下您的联系方式，获取专属AI化转型建议</p>
+    <form id="consultForm" onsubmit="submitConsult(event)">
+      <div class="form-group">
+        <label>姓名 *</label>
+        <input type="text" id="cName" placeholder="请输入您的姓名" required>
+      </div>
+      <div class="form-group">
+        <label>手机号 *</label>
+        <input type="tel" id="cPhone" placeholder="请输入手机号码" required>
+      </div>
+      <div class="form-group">
+        <label>需求简述</label>
+        <textarea id="cNote" placeholder="如：想了解AI短视频获客、AI直播带货…"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">提交咨询 →</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== FLOAT CONSULT ===== -->
+<div class="float-consult" onclick="openConsult()" data-c="floatConsult.text">💬 免费咨询</div>
+
+<script>
+/* ========== API + LocalStorage 双模式 ========== */
+const API_BASE = '/api';
+const LOCAL_KEY = 'laikedixiong_data';
+
+function getLocalStore() {
+  try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '{"bookings":[],"contacts":[],"ai_tests":[]}'); }
+  catch(e) { return { bookings:[], contacts:[], ai_tests:[] }; }
+}
+function saveLocalStore(store) {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(store));
+}
+
+async function apiCall(method, path, data) {
+  // 先尝试真实 API
+  try {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (data) opts.body = JSON.stringify(data);
+    const res = await fetch(API_BASE + path, opts);
+    if (res.ok) return res.json();
+  } catch(e) { /* 降级到本地存储 */ }
+
+  // localStorage 降级
+  if (method === 'POST') {
+    const store = getLocalStore();
+    if (path === '/bookings') {
+      const booking = { id: Date.now(), ...data, status: 'pending', created_at: new Date().toISOString() };
+      store.bookings.push(booking);
+      saveLocalStore(store);
+      return { success: true, data: booking };
+    }
+    if (path === '/contacts') {
+      const contact = { id: Date.now(), ...data, created_at: new Date().toISOString() };
+      store.contacts.push(contact);
+      saveLocalStore(store);
+      return { success: true, data: contact };
+    }
+    if (path === '/ai-test') {
+      const test = { id: Date.now(), ...data, created_at: new Date().toISOString() };
+      store.ai_tests.push(test);
+      saveLocalStore(store);
+      return { success: true };
+    }
+  }
+  return { success: true };
+}
+
+/* ========== City Management ========== */
+const cityNames = {
+  beijing:'北京', shanghai:'上海', shenzhen:'深圳', guangzhou:'广州',
+  hangzhou:'杭州', chengdu:'成都', wuhan:'武汉', nanjing:'南京'
+};
+
+let currentCity = 'shenzhen';
+
+function switchCity(city) {
+  currentCity = city;
+  document.getElementById('citySelect').value = city;
+  document.getElementById('heroCityName').textContent = cityNames[city] || city;
+  localStorage.setItem('laikedixiong_city', city);
+  // 弹窗已打开时同步城市字段
+  const cityField = document.querySelector('#dynamicFields [data-key="city"]');
+  if (cityField) cityField.value = city;
+}
+
+/* ========== Mobile Nav ========== */
+function toggleMobileNav() {
+  const links = document.querySelector('.nav-links');
+  links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+  if (links.style.display === 'flex') {
+    links.style.flexDirection = 'column';
+    links.style.position = 'absolute';
+    links.style.top = '100%';
+    links.style.left = '0';
+    links.style.right = '0';
+    links.style.background = 'rgba(255,255,255,0.95)';
+    links.style.padding = '24px';
+    links.style.gap = '16px';
+    links.style.borderBottom = '1px solid #e2e8f0';
+    links.style.backdropFilter = 'blur(20px)';
+  }
+}
+
+/* ========== Modal ========== */
+const modalTitles = {
+  community: '申请加入AI学联社社群',
+  salon: '预约参加AI沙龙',
+  tour: '报名参加AI游学',
+  visit: '预约参观未来城展厅',
+  course: '报名AI普及线上课',
+  enterprise: '申请公益AI入企培训'
+};
+const modalSubs = {
+  community: '加入当地AI学联社，免费获取最新AI资讯与工具',
+  salon: '锁定线下沙龙席位，与行业专家面对面交流',
+  tour: '深度探访AI标杆企业，拓展AI视野',
+  visit: '亲临未来城AI展厅，体验前沿科技',
+  course: '系统学习AI知识，让门店拥有AI竞争力',
+  enterprise: '为团队申请免费AI培训，全面提升AI能力'
+};
+
+const CITIES = ['beijing', 'shanghai', 'shenzhen', 'guangzhou', 'hangzhou', 'chengdu', 'wuhan', 'nanjing'];
+const STORE_TYPES = ['餐饮', '零售', '美业', '酒店', '其他'];
+
+/* 六大模块差异化表单配置（PRD §02.2）
+   common: true 的字段存顶层（name/phone/city），其余差异化字段收集到 extra JSON */
+const MODULE_FORMS = {
+  community: {
+    fields: [
+      { key: 'name', label: '姓名', type: 'text', placeholder: '请输入您的姓名', required: true, common: true },
+      { key: 'phone', label: '手机号', type: 'tel', placeholder: '请输入手机号码', required: true, common: true, phone: true },
+      { key: 'city', label: '所在城市', type: 'select', options: CITIES, required: true, common: true },
+      { key: 'storeType', label: '门店类型', type: 'radio', options: STORE_TYPES, required: true },
+      { key: 'wechat', label: '微信号', type: 'text', placeholder: '选填，便于运营人员拉群联系', required: false },
+    ],
+  },
+  salon: {
+    fields: [
+      { key: 'name', label: '姓名', type: 'text', placeholder: '请输入您的姓名', required: true, common: true },
+      { key: 'phone', label: '手机号', type: 'tel', placeholder: '请输入手机号码', required: true, common: true, phone: true },
+      { key: 'city', label: '所在城市', type: 'select', options: CITIES, required: true, common: true },
+      { key: 'storeName', label: '门店名称', type: 'text', placeholder: '您的门店/公司名称', required: false },
+      { key: 'expectDate', label: '期望参加日期', type: 'date', required: false },
+      { key: 'companions', label: '同行人数', type: 'number', min: 1, placeholder: '可带朋友同行', required: false },
+    ],
+  },
+  tour: {
+    fields: [
+      { key: 'name', label: '姓名', type: 'text', placeholder: '请输入您的姓名', required: true, common: true },
+      { key: 'phone', label: '手机号', type: 'tel', placeholder: '请输入手机号码', required: true, common: true, phone: true },
+      { key: 'company', label: '企业名称', type: 'text', placeholder: '请输入企业名称', required: false },
+      { key: 'position', label: '职位', type: 'text', placeholder: '您的职位', required: false },
+      { key: 'routePreference', label: '游学路线偏好', type: 'checkbox', options: ['AI标杆门店', '科技企业', '产业园区'], required: false },
+      { key: 'budget', label: '预算区间', type: 'select', options: ['¥3000以下', '¥3000-8000', '¥8000-2万', '2万以上'], required: false },
+    ],
+  },
+  visit: {
+    fields: [
+      { key: 'name', label: '姓名', type: 'text', placeholder: '请输入您的姓名', required: true, common: true },
+      { key: 'phone', label: '手机号', type: 'tel', placeholder: '请输入手机号码', required: true, common: true, phone: true },
+      { key: 'company', label: '单位名称', type: 'text', placeholder: '您的单位/公司名称', required: false },
+      { key: 'position', label: '职务', type: 'text', placeholder: '您的职务', required: false },
+      { key: 'groupSize', label: '预计来访人数', type: 'number', min: 1, placeholder: '几人同行', required: false },
+      { key: 'expectDate', label: '期望参观日期', type: 'date', required: false },
+      { key: 'interest', label: '关注方向', type: 'checkbox', options: ['AI数字人', '短视频获客', '直播带货', '数据化运营', '智慧门店'], required: false },
+    ],
+  },
+  course: {
+    fields: [
+      { key: 'name', label: '姓名', type: 'text', placeholder: '请输入您的姓名', required: true, common: true },
+      { key: 'phone', label: '手机号', type: 'tel', placeholder: '请输入手机号码', required: true, common: true, phone: true },
+      { key: 'wechatOrEmail', label: '微信号 / 邮箱', type: 'text', placeholder: '用于接收课程链接与兑换码', required: false },
+    ],
+  },
+  enterprise: {
+    fields: [
+      { key: 'company', label: '企业名称', type: 'text', placeholder: '请输入企业名称', required: true },
+      { key: 'name', label: '联系人姓名', type: 'text', placeholder: '请输入联系人姓名', required: true, common: true },
+      { key: 'phone', label: '手机号', type: 'tel', placeholder: '请输入手机号码', required: true, common: true, phone: true },
+      { key: 'city', label: '企业所在城市', type: 'select', options: CITIES, required: false, common: true },
+      { key: 'staffSize', label: '员工规模', type: 'select', options: ['10人以下', '10-50人', '50-200人', '200人以上'], required: false },
+      { key: 'topics', label: '期望培训主题', type: 'checkbox', options: ['AI入门认知', 'AI短视频获客', 'AI直播带货', 'AI客户管理', 'AI数据分析'], required: false },
+      { key: 'timeRange', label: '期望时间范围', type: 'text', placeholder: '如：8月下旬', required: false },
+    ],
+  },
+};
+
+function fieldHtml(f) {
+  const cityVal = f.key === 'city' ? currentCity : '';
+  let input = '';
+  if (f.type === 'select') {
+    const opts = f.options.map(c => `<option value="${c}" ${c === cityVal ? 'selected' : ''}>${cityNames[c] || c}</option>`).join('');
+    input = `<select data-key="${f.key}">${opts}</select>`;
+  } else if (f.type === 'radio' || f.type === 'checkbox') {
+    input = `<div class="opt-group" data-key="${f.key}">` + f.options.map(o =>
+      `<label class="opt-item"><input type="${f.type}" name="extra_${f.key}" value="${o}"><span>${o}</span></label>`
+    ).join('') + '</div>';
+  } else {
+    input = `<input type="${f.type}" data-key="${f.key}" min="${f.min || ''}" placeholder="${f.placeholder || ''}">`;
+  }
+  return `<div class="form-group"><label>${f.label} ${f.required ? '*' : ''}</label>${input}</div>`;
+}
+
+function renderDynamicFields(type) {
+  const cfg = MODULE_FORMS[type];
+  if (!cfg) return;
+  document.getElementById('dynamicFields').innerHTML = cfg.fields.map(fieldHtml).join('');
+  // 单选/多选选中态样式
+  document.querySelectorAll('#dynamicFields .opt-item input').forEach(inp => {
+    inp.addEventListener('change', () => inp.closest('.opt-item').classList.toggle('selected', inp.checked));
+  });
+}
+
+function collectFormData(type) {
+  const cfg = MODULE_FORMS[type];
+  const data = { type, extra: {} };
+  cfg.fields.forEach(f => {
+    const el = document.querySelector(`#dynamicFields [data-key="${f.key}"]`);
+    if (!el) return;
+    let val;
+    if (f.type === 'checkbox') {
+      val = Array.from(el.querySelectorAll('input:checked')).map(i => i.value);
+    } else if (f.type === 'radio') {
+      const checked = el.querySelector('input:checked');
+      val = checked ? checked.value : '';
+    } else {
+      val = el.value.trim();
+    }
+    if (f.common) {
+      if (val) data[f.key] = val;
+    } else {
+      if (val && (!Array.isArray(val) || val.length > 0)) data.extra[f.key] = val;
+    }
+  });
+  return data;
+}
+
+function openModal(type) {
+  document.getElementById('bookingType').value = type;
+  document.getElementById('modalTitle').textContent = modalTitles[type] || '预约申请';
+  let sub = modalSubs[type] || '请填写以下信息，我们将尽快与您联系';
+  // 沙龙弹窗补充当前城市场次（来自 /api/city-config）
+  if (type === 'salon' && cityConfig && cityConfig.salon && cityConfig.salon.dates && cityConfig.salon.dates.length) {
+    sub += ` · 本期场次：${cityConfig.salon.dates.join('、')}`;
+  }
+  document.getElementById('modalSub').textContent = sub;
+  renderDynamicFields(type);
+  document.getElementById('modalForm').style.display = 'block';
+  document.getElementById('formSuccess').style.display = 'none';
+  document.getElementById('bookingForm').reset();
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+async function submitBooking(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.textContent = '提交中...'; btn.disabled = true;
+
+  const type = document.getElementById('bookingType').value;
+  const cfg = MODULE_FORMS[type];
+
+  // 必填校验
+  for (const f of cfg.fields) {
+    if (!f.required) continue;
+    const el = document.querySelector(`#dynamicFields [data-key="${f.key}"]`);
+    let filled = false;
+    if (f.type === 'checkbox') filled = el && el.querySelectorAll('input:checked').length > 0;
+    else if (f.type === 'radio') filled = el && !!el.querySelector('input:checked');
+    else filled = el && el.value.trim() !== '';
+    if (!filled) {
+      alert(`请填写：${f.label}`);
+      btn.textContent = '提交申请 →'; btn.disabled = false;
+      return;
+    }
+  }
+
+  const data = collectFormData(type);
+  if (!/^1[3-9]\d{9}$/.test(data.phone)) {
+    alert('手机号格式不正确');
+    btn.textContent = '提交申请 →'; btn.disabled = false;
+    return;
+  }
+
+  try {
+    const result = await apiCall('POST', '/bookings', data);
+    if (result.success) {
+      document.getElementById('modalForm').style.display = 'none';
+      document.getElementById('formSuccess').style.display = 'block';
+    } else {
+      alert('提交失败：' + (result.error || '请稍后重试'));
+    }
+  } catch (err) {
+    alert('网络错误，请稍后重试');
+  } finally {
+    btn.textContent = '提交申请 →'; btn.disabled = false;
+  }
+}
+
+async function submitQuickForm(e) {
+  e.preventDefault();
+  const inputs = e.target.querySelectorAll('input');
+  const data = { name: inputs[0]?.value, phone: inputs[1]?.value, city: document.getElementById('citySelect')?.value };
+
+  try {
+    const result = await apiCall('POST', '/contacts', data);
+    if (result.success) {
+      e.target.innerHTML = '<p style="color:#10b981;font-size:1.1rem;text-align:center;padding:20px">✅ 提交成功！我们将在24小时内与您联系</p>';
+    } else {
+      alert('提交失败，请稍后重试');
+    }
+  } catch (err) {
+    alert('网络错误，请稍后重试');
+  }
+}
+
+/* ========== FAQ ========== */
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = answer.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-a.open').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-q.open').forEach(q => q.classList.remove('open'));
+  if (!isOpen) {
+    answer.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+
+/* ========== AI Test Quiz (P3 升级版：个人版/企业版) ========== */
+const quizQuestionsPersonal = [
+  {
+    q: '你的门店目前在用哪些AI工具？',
+    options: [
+      { text: '完全没用过任何AI工具', score: 0 },
+      { text: '只用来查资料、翻译等基础用途', score: 15 },
+      { text: '正在用AI写文案、做图片', score: 30 },
+      { text: 'AI已深度融入业务流程（客服、营销、数据分析等）', score: 50 }
+    ]
+  },
+  {
+    q: '你的门店如何获取线上客户？',
+    options: [
+      { text: '不做线上引流，全靠线下自然流量', score: 0 },
+      { text: '偶尔发发朋友圈或短视频，纯手动操作', score: 15 },
+      { text: '有计划地做短视频和直播，但人工为主', score: 30 },
+      { text: '使用AI工具批量生产内容，精准获客', score: 50 }
+    ]
+  },
+  {
+    q: '你对AI的态度是？',
+    options: [
+      { text: '不太了解，感觉离自己很远', score: 0 },
+      { text: '知道AI很火，但不知道怎么用', score: 15 },
+      { text: '正在学习AI，尝试应用到门店', score: 35 },
+      { text: 'AI已经是核心竞争力，持续迭代优化', score: 50 }
+    ]
+  },
+  {
+    q: '你的客户数据管理方式是？',
+    options: [
+      { text: '没有客户数据管理，靠记忆', score: 0 },
+      { text: '用Excel或记账本简单记录', score: 10 },
+      { text: '使用CRM系统，但分析和营销靠人工', score: 25 },
+      { text: 'AI驱动的智能CRM，自动分析+精准营销', score: 50 }
+    ]
+  },
+  {
+    q: '你的门店直播频率是？',
+    options: [
+      { text: '从没做过直播', score: 0 },
+      { text: '偶尔直播，频率低且效果一般', score: 15 },
+      { text: '定期直播，有人力投入', score: 30 },
+      { text: 'AI数字人24小时不间断直播', score: 50 }
+    ]
+  },
+  {
+    q: '你如何做经营决策？',
+    options: [
+      { text: '凭经验和直觉判断', score: 0 },
+      { text: '看基础的进销存数据', score: 15 },
+      { text: '使用数据看板分析趋势', score: 30 },
+      { text: 'AI辅助数据分析和商业决策', score: 50 }
+    ]
+  },
+  {
+    q: '你使用过哪些AI内容创作工具？',
+    options: [
+      { text: '完全没用过', score: 0 },
+      { text: '用过ChatGPT或类似对话AI', score: 10 },
+      { text: '用过AI写作+AI图片生成工具', score: 30 },
+      { text: 'AI写作+图片+视频+数字人全方位使用', score: 50 }
+    ]
+  },
+  {
+    q: '你的团队AI培训情况？',
+    options: [
+      { text: '团队完全不了解AI', score: 0 },
+      { text: '个别人自学过一点', score: 10 },
+      { text: '组织过AI内部分享', score: 25 },
+      { text: '有系统的AI培训计划，人人都会用AI', score: 50 }
+    ]
+  }
+];
+
+const quizQuestionsCompany = [
+  {
+    q: '公司是否在使用AI客服或自动回复？',
+    options: [
+      { text: '没有，全靠人工接待', score: 0 },
+      { text: '用过，但效果一般已停用', score: 15 },
+      { text: '部分渠道在用', score: 30 },
+      { text: 'AI客服已全面部署', score: 50 }
+    ]
+  },
+  {
+    q: '营销素材（海报/文案/视频）如何产出？',
+    options: [
+      { text: '全部外包或人工设计', score: 0 },
+      { text: '人工为主，少量用AI', score: 15 },
+      { text: 'AI为主，人工审核', score: 30 },
+      { text: '全AI批量生产', score: 50 }
+    ]
+  },
+  {
+    q: '库存与进货决策用什么方式？',
+    options: [
+      { text: '凭经验拍脑袋', score: 0 },
+      { text: '看Excel手工统计', score: 15 },
+      { text: '有系统但靠人工分析', score: 30 },
+      { text: 'AI辅助预测与决策', score: 50 }
+    ]
+  },
+  {
+    q: '员工接受过AI工具培训吗？',
+    options: [
+      { text: '完全没有', score: 0 },
+      { text: '个别人自学过', score: 10 },
+      { text: '组织过内部分享', score: 25 },
+      { text: '有系统的AI培训计划', score: 50 }
+    ]
+  },
+  {
+    q: '短视频和直播获客情况？',
+    options: [
+      { text: '没有做过', score: 0 },
+      { text: '偶尔人工发一发', score: 15 },
+      { text: '定期做但全靠人力', score: 30 },
+      { text: 'AI批量产出+数字人直播', score: 50 }
+    ]
+  },
+  {
+    q: '客户管理和私域运营方式？',
+    options: [
+      { text: '无系统，靠人工维护', score: 0 },
+      { text: 'Excel记录客户', score: 10 },
+      { text: 'CRM系统人工运营', score: 25 },
+      { text: 'AI自动化运营私域', score: 50 }
+    ]
+  },
+  {
+    q: '经营决策的数据使用程度？',
+    options: [
+      { text: '凭感觉做决策', score: 0 },
+      { text: '看基础报表', score: 15 },
+      { text: '有数据看板', score: 30 },
+      { text: 'AI辅助商业决策', score: 50 }
+    ]
+  },
+  {
+    q: '团队使用AI工具的覆盖情况？',
+    options: [
+      { text: '几乎没有人在用', score: 0 },
+      { text: '个别岗位在使用', score: 15 },
+      { text: '部分岗位深度使用', score: 30 },
+      { text: '全岗位普及AI', score: 50 }
+    ]
+  }
+];
+
+let quizMode = null, currentQ = 0, totalScore = 0;
+const maxScore = 8 * 50;
+
+function getQuestions() {
+  return quizMode === 'company' ? quizQuestionsCompany : quizQuestionsPersonal;
+}
+
+function initQuiz() {
+  quizMode = null; currentQ = 0; totalScore = 0;
+  document.getElementById('quizType').style.display = 'flex';
+  document.getElementById('aiQuiz').style.display = 'none';
+  document.getElementById('aiResult').style.display = 'none';
+}
+
+function startQuiz(mode) {
+  quizMode = mode;
+  document.getElementById('quizType').style.display = 'none';
+  document.getElementById('aiQuiz').style.display = 'block';
+  renderProgress();
+  renderQuestion();
+}
+
+function renderProgress() {
+  document.getElementById('qProgress').innerHTML = getQuestions().map((_, i) =>
+    `<span class="${i < currentQ ? 'done' : i === currentQ ? 'active' : ''}"></span>`
+  ).join('');
+}
+
+function renderQuestion() {
+  const q = getQuestions()[currentQ];
+  document.getElementById('qTitle').textContent = `Q${currentQ + 1}. ${q.q}`;
+  document.getElementById('qOptions').innerHTML = q.options.map((o, i) =>
+    `<button class="q-option" onclick="selectAnswer(${i})">${o.text}</button>`
+  ).join('');
+}
+
+function selectAnswer(idx) {
+  totalScore += getQuestions()[currentQ].options[idx].score;
+  currentQ++;
+  if (currentQ < getQuestions().length) {
+    renderProgress();
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+/* 等级划分：AI青铜 / AI白银 / AI黄金 / AI王者（PRD §05.2） */
+function getLevel(pct) {
+  if (pct <= 25) return { title: 'AI青铜', quote: '你的门店还在手工时代，隔壁老王已经用AI日省3小时。', advice: '建议：加入AI学联社社群，从免费工具上手，迈出AI化第一步。' };
+  if (pct <= 50) return { title: 'AI白银', quote: '你已经尝到AI的甜头，但工具还停留在单点使用。', advice: '建议：报名AI普及线上课，系统补齐认知，让AI成体系落地。' };
+  if (pct <= 75) return { title: 'AI黄金', quote: '你已跑赢大部分同行，AI正在成为门店的核心竞争力。', advice: '建议：参加AI沙龙与游学，与高手过招，把经验变成打法。' };
+  return { title: 'AI王者', quote: '你就是门店AI化的标杆，值得被更多人看见！', advice: '建议：申请公益AI入企培训或加入讲师团队，复制你的成功经验。' };
+}
+
+function showResult() {
+  document.getElementById('aiQuiz').style.display = 'none';
+  document.getElementById('aiResult').style.display = 'block';
+
+  const pct = Math.round((totalScore / maxScore) * 100);
+  const lv = getLevel(pct);
+  document.getElementById('scoreVal').textContent = pct;
+  document.getElementById('scoreCircle').style.setProperty('--score', pct + '%');
+  document.getElementById('resultTitle').textContent = lv.title;
+  document.getElementById('resultDesc').textContent = lv.quote + ' ' + lv.advice;
+
+  // Canvas 生成分享海报
+  const posterUrl = generatePoster(pct, lv);
+  document.getElementById('posterImg').src = posterUrl;
+  document.getElementById('downloadPoster').href = posterUrl;
+
+  // 异步提交检测结果到后端（静默失败，不影响用户体验）
+  apiCall('POST', '/ai-test', {
+    score: pct, level: lv.title, city: currentCity, mode: quizMode
+  }).catch(() => {});
+}
+
+/* Canvas 分享海报：纯前端生成（750x1450），无需微信 JS-SDK */
+function generatePoster(pct, lv) {
+  const W = 750, H = 1450;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // 背景渐变
+  const g = ctx.createLinearGradient(0, 0, W, H);
+  g.addColorStop(0, '#4f46e5'); g.addColorStop(0.5, '#6366f1'); g.addColorStop(1, '#2563eb');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  // 顶部品牌
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.font = 'bold 42px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('觉醒未来城 · 含AI量检测', W / 2, 110);
+  ctx.fillStyle = 'rgba(255,255,255,0.65)';
+  ctx.font = '30px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('要么AI化，要么被AI化', W / 2, 170);
+
+  // 分数圆环
+  const cx = W / 2, cy = 520, r = 210;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 32; ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * pct / 100);
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 32; ctx.lineCap = 'round'; ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 160px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText(pct + '%', cx, cy + 60);
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.font = '32px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('AI 指数', cx, cy + 140);
+
+  // 等级
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 72px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText(lv.title, cx, 920);
+
+  // 金句（自动换行）
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.font = '34px "PingFang SC","Microsoft YaHei",sans-serif';
+  wrapText(ctx, '「' + lv.quote + '」', cx, 1010, W - 140, 52);
+
+  // 底部二维码占位（正式上线替换为小程序码/二维码图片）
+  const qrSize = 180, qx = (W - qrSize) / 2, qy = 1180;
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(qx, qy, qrSize, qrSize, 24);
+  else ctx.rect(qx, qy, qrSize, qrSize);
+  ctx.fill();
+  ctx.fillStyle = '#4f46e5';
+  ctx.font = 'bold 30px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('测测你的含AI量', W / 2, qy + qrSize / 2 + 4);
+  ctx.fillStyle = '#6366f1';
+  ctx.font = '26px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('长按识别 / 扫码进入', W / 2, qy + qrSize / 2 + 46);
+
+  // 底部品牌
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.font = 'bold 36px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('觉醒未来城 · 推动中国企业全面AI化', W / 2, 1410);
+
+  return canvas.toDataURL('image/png');
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const chars = text.split('');
+  let line = '';
+  for (const ch of chars) {
+    if (ctx.measureText(line + ch).width > maxWidth) {
+      ctx.fillText(line, x, y);
+      line = ch;
+      y += lineHeight;
+    } else {
+      line += ch;
+    }
+  }
+  ctx.fillText(line, x, y);
+}
+
+function resetQuiz() { initQuiz(); }
+
+function shareResult() {
+  const pct = document.getElementById('scoreVal').textContent;
+  const title = document.getElementById('resultTitle').textContent;
+  const text = `我的含AI量是${pct}分——${title}！你也来测测：要么AI化，要么被AI化！`;
+  if (navigator.share) {
+    navigator.share({ title: '觉醒未来城 · 含AI量检测', text: text, url: window.location.href });
+  } else {
+    navigator.clipboard.writeText(text + ' ' + window.location.href).then(() => {
+      alert('已复制分享文案，快去分享给朋友吧！');
+    });
+  }
+}
+
+/* ========== 站点内容后台化（CMS） ========== */
+function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+function escAttr(s) { return esc(s).replace(/"/g, '&quot;'); }
+
+function resolvePath(obj, path) {
+  return path.split('.').reduce((o, k) => (o === undefined || o === null) ? undefined : o[k], obj);
+}
+
+const MODULE_ICON_COLORS = ['purple', 'blue', 'green', 'amber', 'rose', 'cyan'];
+
+function contentBtnOnclick(btnType) {
+  return btnType === 'consult' ? 'openConsult()' : `openModal('${btnType}')`;
+}
+
+// 各区块应用函数：把后台内容（DB）渲染到页面，空值由 data-c 兜底保持硬编码
+const CONTENT_APPLY = {
+  meta(m) {
+    if (m.title) document.title = m.title;
+    const md = document.querySelector('meta[name="description"]');
+    if (md && m.description) md.content = m.description;
+  },
+  hero(h) {
+    if (h.stats && h.stats.length) {
+      document.getElementById('heroStats').innerHTML = h.stats.map(s =>
+        `<div class="hero-stat"><h3>${esc(s.value)}</h3><p>${esc(s.label)}</p></div>`).join('');
+    }
+  },
+  painPoints(p) {
+    const col1 = document.getElementById('ppCol1');
+    const col2 = document.getElementById('ppCol2');
+    if (col1 && p.col1Items && p.col1Items.length) {
+      col1.innerHTML = `<h3>${esc(p.col1Title || '')}</h3>` + p.col1Items.map(it =>
+        `<div class="pp-item"><div class="pp-icon">${esc(it.icon)}</div><div class="pp-body"><h4>${esc(it.title)}</h4><p>${esc(it.desc)}</p></div></div>`).join('');
+    }
+    if (col2 && p.col2Items && p.col2Items.length) {
+      col2.innerHTML = `<h3>${esc(p.col2Title || '')}</h3>` + p.col2Items.map(it =>
+        `<div class="pp-item"><div class="pp-icon">${esc(it.icon)}</div><div class="pp-body"><h4>${esc(it.title)}</h4><p>${esc(it.desc)}</p></div></div>`).join('');
+    }
+  },
+  modules(m) {
+    const grid = document.getElementById('modulesGrid');
+    if (!grid || !m.cards || !m.cards.length) return;
+    grid.innerHTML = m.cards.map((c, i) => `
+      <div class="module-card">
+        <div class="icon ${MODULE_ICON_COLORS[i % 6]}">${esc(c.icon)}</div>
+        <h3>${esc(c.title)}</h3>
+        <p>${esc(c.desc)}</p>
+        <button class="card-btn" onclick="${contentBtnOnclick(c.btnType)}">${esc(c.btnText || '立即申请 →')}</button>
+      </div>`).join('');
+  },
+  centers(c) {
+    const grid = document.getElementById('centersGrid');
+    if (!grid || !c.cards || !c.cards.length) return;
+    grid.innerHTML = c.cards.map(card => `
+      <div class="center-card">
+        <div class="center-icon">${esc(card.icon)}</div>
+        <h4>${esc(card.title)}</h4>
+        <p>${esc(card.desc)}</p>
+        <div class="center-tags">${(card.tags || []).map(t => `<span>${esc(t)}</span>`).join('')}</div>
+      </div>`).join('');
+  },
+  syllabus(s) {
+    const tl = document.getElementById('syllabusTimeline');
+    if (!tl || !s.items || !s.items.length) return;
+    tl.innerHTML = s.items.map(it => `
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="num">${esc(it.num)}</div>
+          <h4>${esc(it.title)}</h4>
+          <p>${esc(it.desc)}</p>
+        </div>
+      </div>`).join('');
+  },
+  instructors(i) {
+    const grid = document.getElementById('instructorsGrid');
+    if (!grid || !i.cards || !i.cards.length) return;
+    grid.innerHTML = i.cards.map((c, idx) => {
+      const av = c.avatarImg
+        ? `<img src="${escAttr(c.avatarImg)}" alt="${esc(c.name)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`
+        : esc(c.avatar || '师');
+      return `
+      <div class="instructor-card">
+        <div class="instructor-avatar ${idx % 2 ? 'blue' : 'purple'}">${av}</div>
+        <div class="instructor-info">
+          <h4>${esc(c.name)}</h4>
+          <p class="role">${esc(c.role)}</p>
+          <p class="bio">${esc(c.bio)}</p>
+        </div>
+      </div>`;
+    }).join('');
+  },
+  why(w) {
+    const grid = document.getElementById('diffGrid');
+    if (!grid || !w.cards || !w.cards.length) return;
+    grid.innerHTML = w.cards.map(c => `
+      <div class="diff-card">
+        <div class="num">${esc(c.num)}</div>
+        <h4>${esc(c.title)}</h4>
+        <p>${esc(c.desc)}</p>
+      </div>`).join('');
+  },
+  showroom(sh) {
+    const gal = document.getElementById('showroomGallery');
+    if (!gal || !sh.items || !sh.items.length) return;
+    gal.innerHTML = sh.items.map(it => {
+      const large = it.large ? ' large' : '';
+      const media = it.img
+        ? `<img src="${escAttr(it.img)}" alt="${esc(it.title)}" style="width:100%;height:100%;object-fit:cover">`
+        : `<span style="font-size:2rem;">${esc(it.icon)}</span>`;
+      return `
+      <div class="showroom-item${large}" style="font-size:1rem;padding:20px;flex-direction:column;gap:8px;overflow:hidden">
+        ${media}
+        <strong style="font-size:0.95rem;">${esc(it.title)}</strong>
+        <p style="font-size:0.8rem;color:#64748b;text-align:center;margin:0">${esc(it.desc)}</p>
+      </div>`;
+    }).join('');
+  },
+  pricing(p) {
+    const grid = document.getElementById('pricingGrid');
+    if (!grid || !p.cards || !p.cards.length) return;
+    grid.innerHTML = p.cards.map(c => `
+      <div class="pricing-card${c.featured ? ' featured' : ''}">
+        ${c.badge ? `<div class="badge">${esc(c.badge)}</div>` : ''}
+        <h4>${esc(c.name)}</h4>
+        <div class="price" style="${c.priceStyle || ''}">${esc(c.price)}</div>
+        <div class="price-period">${esc(c.period)}</div>
+        <ul class="features">${(c.features || []).map(f => `<li>${esc(f)}</li>`).join('')}</ul>
+        <button class="btn ${c.featured ? 'btn-primary' : 'btn-outline'}" style="width:100%" onclick="${contentBtnOnclick(c.btnType)}">${esc(c.btnText)}</button>
+      </div>`).join('');
+  },
+  faq(f) {
+    const list = document.getElementById('faqList');
+    if (!list || !f.items || !f.items.length) return;
+    list.innerHTML = f.items.map(it => `
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">${esc(it.q)}<span class="arrow">+</span></button>
+        <div class="faq-a">${esc(it.a)}</div>
+      </div>`).join('');
+  },
+  cta(c) { /* title/subtitle 由 data-c 属性统一处理 */ },
+  footer(fo) { /* brand/desc/copyright 由 data-c 属性统一处理 */ },
+  floatConsult(fc) { /* text 由 data-c 属性统一处理 */ },
+};
+
+function applyContent(content) {
+  Object.keys(CONTENT_APPLY).forEach(key => {
+    if (content[key]) CONTENT_APPLY[key](content[key]);
+  });
+  // 最后统一处理 data-c / data-c-html 标记（空值保留硬编码兜底）
+  document.querySelectorAll('[data-c]').forEach(el => {
+    const val = resolvePath(content, el.dataset.c);
+    if (val !== undefined && val !== null && val !== '') el.textContent = val;
+  });
+  document.querySelectorAll('[data-c-html]').forEach(el => {
+    const val = resolvePath(content, el.dataset.cHtml);
+    if (val !== undefined && val !== null && val !== '') el.innerHTML = val;
+  });
+}
+
+// 页面加载时拉取后台内容，失败静默（降级到硬编码）
+async function loadSiteContent() {
+  try {
+    const res = await fetch('/api/content');
+    if (!res.ok) return;
+    const data = (await res.json()).data;
+    if (data) applyContent(data);
+  } catch (e) { /* 忽略 */ }
+}
+
+/* ========== 城市落地页（P4） ========== */
+let cityConfig = null;
+
+// 城市识别优先级：URL 路径 /city/xxx → query ?city= → localStorage → 默认深圳
+function detectCity() {
+  const pathMatch = location.pathname.match(/^\/city\/([a-z]+)/i);
+  let city = pathMatch ? pathMatch[1].toLowerCase() : new URLSearchParams(location.search).get('city');
+  if (!city || !cityNames[city]) city = localStorage.getItem('laikedixiong_city') || 'shenzhen';
+  switchCity(city);
+}
+
+// 从后端加载城市配置（沙龙场次等），失败静默不影响页面
+async function loadCityConfig() {
+  try {
+    const res = await fetch(`/api/city-config?city=${currentCity}`);
+    if (res.ok) {
+      const d = await res.json();
+      if (d.success) cityConfig = d.data;
+    }
+  } catch (e) { /* 忽略 */ }
+}
+
+/* ========== 悬浮咨询（§04.3） ========== */
+function openConsult() {
+  document.getElementById('consultOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeConsult(e) {
+  if (e && e.target !== document.getElementById('consultOverlay')) return;
+  document.getElementById('consultOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+async function submitConsult(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.textContent = '提交中...'; btn.disabled = true;
+  const data = {
+    name: document.getElementById('cName').value,
+    phone: document.getElementById('cPhone').value,
+    city: currentCity,
+    note: document.getElementById('cNote').value,
+  };
+  try {
+    const result = await apiCall('POST', '/contacts', data);
+    if (result.success) {
+      e.target.innerHTML = '<p style="color:#10b981;font-size:1.1rem;text-align:center;padding:20px">✅ 提交成功！我们将在24小时内与您联系</p>';
+    } else {
+      alert('提交失败：' + (result.error || '请稍后重试'));
+    }
+  } catch (err) {
+    alert('网络错误，请稍后重试');
+  } finally {
+    btn.textContent = '提交咨询 →'; btn.disabled = false;
+  }
+}
+
+// Initialize
+detectCity();
+loadCityConfig();
+loadSiteContent();
+initQuiz();
+
+// ESC 关闭弹窗
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeConsult(); }
+});
+</script>
+</body>
+</html>

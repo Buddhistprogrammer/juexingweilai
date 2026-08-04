@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>来客兄弟 · 管理后台</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#0a0a0f;color:#e8e8ed;min-height:100vh}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* Header */
+.header{padding:24px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.header h1{font-size:1.3rem;font-weight:800}
+.header h1 span{color:#a78bfa}
+.header-actions{display:flex;gap:12px;align-items:center}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:32px 0}
+.stat-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px}
+.stat-card .label{font-size:0.8rem;color:#6b7280;margin-bottom:8px}
+.stat-card .val{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* Type Stats */
+.type-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.type-badge{padding:6px 14px;border-radius:50px;font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:6px}
+.type-badge.salon{background:rgba(124,58,237,0.15);color:#a78bfa}
+.type-badge.community{background:rgba(59,130,246,0.15);color:#60a5fa}
+.type-badge.tour{background:rgba(52,211,153,0.15);color:#34d399}
+.type-badge.visit{background:rgba(251,191,36,0.15);color:#fbbf24}
+.type-badge.course{background:rgba(244,114,182,0.15);color:#f472b6}
+.type-badge.enterprise{background:rgba(34,211,238,0.15);color:#22d3ee}
+
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:16px;border:1px solid rgba(255,255,255,0.06)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:14px 16px;font-size:0.8rem;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.06)}
+td{padding:14px 16px;font-size:0.9rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+tr:hover{background:rgba(124,58,237,0.04)}
+
+.status{display:inline-block;padding:4px 12px;border-radius:50px;font-size:0.75rem;font-weight:600}
+.status.pending{background:rgba(251,191,36,0.15);color:#fbbf24}
+.status.contacted{background:rgba(59,130,246,0.15);color:#60a5fa}
+.status.confirmed{background:rgba(52,211,153,0.15);color:#34d399}
+.status.completed{background:rgba(34,211,238,0.15);color:#22d3ee}
+.status.cancelled{background:rgba(239,68,68,0.15);color:#f87171}
+
+.type-tag{display:inline-block;padding:3px 10px;border-radius:50px;font-size:0.75rem;font-weight:600}
+.type-tag.salon{background:rgba(124,58,237,0.15);color:#a78bfa}
+.type-tag.community{background:rgba(59,130,246,0.15);color:#60a5fa}
+.type-tag.tour{background:rgba(52,211,153,0.15);color:#34d399}
+.type-tag.visit{background:rgba(251,191,36,0.15);color:#fbbf24}
+.type-tag.course{background:rgba(244,114,182,0.15);color:#f472b6}
+.type-tag.enterprise{background:rgba(34,211,238,0.15);color:#22d3ee}
+
+select.st{font-size:0.8rem;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e8e8ed;cursor:pointer}
+
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:8px;padding:24px 0}
+.pagination button{padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#e8e8ed;cursor:pointer;font-size:0.85rem}
+.pagination button:hover{background:rgba(124,58,237,0.1);border-color:rgba(167,139,250,0.3)}
+.pagination button.active{background:rgba(124,58,237,0.2);border-color:#7c3aed;color:#a78bfa}
+.pagination button:disabled{opacity:0.3;cursor:not-allowed}
+
+/* Loading */
+.loading{text-align:center;padding:60px;color:#6b7280}
+.error{text-align:center;padding:60px;color:#f87171}
+.empty{text-align:center;padding:60px;color:#6b7280}
+
+/* Login */
+.login{max-width:400px;margin:100px auto;padding:40px;border-radius:20px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06)}
+.login h2{font-size:1.5rem;margin-bottom:8px}
+.login p{color:#6b7280;margin-bottom:24px;font-size:0.9rem}
+.login input{padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#e8e8ed;font-size:1rem;width:100%}
+.login button{width:100%;margin-top:16px;padding:14px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#3b82f6);color:#fff;font-size:1rem;font-weight:600;border:none;cursor:pointer}
+.login button:hover{opacity:0.9}
+
+.msg{position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:12px;font-size:0.9rem;font-weight:600;z-index:9999;animation:slideIn 0.3s ease}
+.msg.success{background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.3)}
+.msg.error{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3)}
+@keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+.refresh-btn{padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#e8e8ed;cursor:pointer;font-size:0.85rem}
+.refresh-btn:hover{background:rgba(255,255,255,0.08)}
+
+/* Tabs */
+.tabs{display:flex;gap:8px;padding:24px 0 0}
+.tab{padding:10px 20px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#9ca3af;cursor:pointer;font-size:0.9rem;font-weight:600}
+.tab.active{background:rgba(124,58,237,0.2);border-color:#7c3aed;color:#a78bfa}
+
+/* Content Manager */
+.content-layout{display:flex;gap:20px;align-items:flex-start;padding:24px 0}
+.content-nav{width:170px;flex-shrink:0;display:flex;flex-direction:column;gap:6px}
+.cbn-item{padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);color:#d1d5db;cursor:pointer;font-size:0.88rem;text-align:left}
+.cbn-item:hover{background:rgba(124,58,237,0.08)}
+.cbn-item.active{background:rgba(124,58,237,0.2);border-color:#7c3aed;color:#a78bfa}
+.content-form{flex:1;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px;min-width:0}
+.cf-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.cf-head h3{font-size:1.1rem}
+.cf-actions{display:flex;gap:8px;align-items:center}
+.cf-save{padding:9px 18px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#3b82f6);color:#fff;border:none;cursor:pointer;font-weight:600;font-size:0.9rem}
+.cf-field{margin-bottom:18px}
+.cf-label{display:block;font-size:0.82rem;color:#9ca3af;margin-bottom:6px;font-weight:600}
+.cf-label-sm{font-size:0.75rem;margin-bottom:4px}
+.cf-input{width:100%;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#e8e8ed;font-size:0.9rem;font-family:inherit}
+.cf-input:focus{outline:none;border-color:#7c3aed}
+.cf-hint{font-size:0.75rem;color:#6b7280;margin-top:4px}
+.cf-row{display:flex;flex-wrap:wrap;gap:10px;padding:12px;border:1px dashed rgba(255,255,255,0.14);border-radius:10px;margin-bottom:10px;align-items:flex-end}
+.cf-cell{flex:1;min-width:150px}
+.cf-del{padding:6px 12px;border-radius:8px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f87171;cursor:pointer;font-size:0.8rem}
+.cf-add{padding:8px 14px;border-radius:8px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:#34d399;cursor:pointer;font-size:0.85rem;font-weight:600}
+.cf-imgrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cf-imgrow .cf-input{flex:1;min-width:120px}
+.cf-file{color:#9ca3af;font-size:0.8rem;max-width:150px}
+.cf-preview{width:56px;height:56px;border-radius:8px;object-fit:cover;border:1px solid rgba(255,255,255,0.12)}
+.cf-preview[src=""]{display:none}
+.cf-check{display:inline-flex;align-items:center;gap:6px;color:#d1d5db;font-size:0.88rem}
+.cf-check input{accent-color:#7c3aed}
+.cf-tip{margin-top:16px;font-size:0.8rem;color:#6b7280}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <h1>来客<span>兄弟</span> · 管理后台</h1>
+  <div class="header-actions">
+    <button style="background:none;border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:8px;color:#9ca3af;cursor:pointer;font-size:0.85rem" onclick="logout()">退出</button>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" id="tabBtnBookings" onclick="switchTab('bookings')">📋 预约管理</button>
+  <button class="tab" id="tabBtnContent" onclick="switchTab('content')">✏️ 内容管理</button>
+</div>
+
+<!-- ===== 预约管理 ===== -->
+<div id="pageBookings">
+
+<!-- Stats -->
+<div class="stats" id="statsArea">
+  <div class="stat-card"><div class="label">今日新增预约</div><div class="val" id="statToday">-</div></div>
+  <div class="stat-card"><div class="label">总预约数</div><div class="val" id="statTotal">-</div></div>
+  <div class="stat-card"><div class="label">待联系</div><div class="val" id="statPending" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent">-</div></div>
+  <div class="stat-card"><div class="label">已确认</div><div class="val" id="statConfirmed" style="background:linear-gradient(135deg,#34d399,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent">-</div></div>
+</div>
+
+<!-- Type Stats -->
+<div class="type-stats" id="typeStats"></div>
+
+<!-- Table -->
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>类型</th>
+        <th>姓名</th>
+        <th>手机号</th>
+        <th>城市</th>
+        <th>公司</th>
+        <th>备注</th>
+        <th>附加信息</th>
+        <th>状态</th>
+        <th>时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <tr><td colspan="11" class="loading">加载中...</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="pagination" id="pagination"></div>
+
+</div><!-- /pageBookings -->
+
+<!-- ===== 内容管理 ===== -->
+<div id="pageContent" style="display:none">
+  <div class="content-layout">
+    <div class="content-nav" id="contentNav"></div>
+    <div class="content-form">
+      <div class="cf-head">
+        <h3 id="cfTitle">内容区块</h3>
+        <div class="cf-actions">
+          <button class="refresh-btn" onclick="loadBlock(currentBlockKey)">重新加载</button>
+          <button class="refresh-btn" onclick="resetBlock()">恢复默认</button>
+          <button class="cf-save" onclick="saveBlock()">💾 保存区块</button>
+        </div>
+      </div>
+      <div id="cfFields"></div>
+      <p class="cf-tip">💡 保存后前台刷新即可生效；清空某个字段则前台显示页面原默认内容；图片可粘贴 URL 或直接上传。</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const TYPE_NAMES = {
+  community:'AI社群', salon:'AI沙龙', tour:'AI游学',
+  visit:'参观展厅', course:'线上课', enterprise:'企业培训'
+};
+const CITY_NAMES = {
+  beijing:'北京', shanghai:'上海', shenzhen:'深圳', guangzhou:'广州',
+  hangzhou:'杭州', chengdu:'成都', wuhan:'武汉', nanjing:'南京'
+};
+const STATUS_NAMES = { pending:'待联系', contacted:'已联系', confirmed:'已确认', completed:'已完成', cancelled:'已取消' };
+
+let token, currentPage = 1;
+
+function getToken() {
+  const p = new URLSearchParams(location.search);
+  return p.get('token') || localStorage.getItem('admin_token');
+}
+
+function login() {
+  const t = getToken();
+  if (!t) {
+    document.body.innerHTML = `
+      <div class="login">
+        <h2>管理后台登录</h2>
+        <p>请输入管理密钥</p>
+        <input id="tokenInput" type="password" placeholder="Admin Token" onkeydown="if(event.key==='Enter')doLogin()">
+        <button onclick="doLogin()">进入后台</button>
+      </div>`;
+    return false;
+  }
+  token = t;
+  localStorage.setItem('admin_token', t);
+  return true;
+}
+
+function doLogin() {
+  const t = document.getElementById('tokenInput').value;
+  if (!t) return;
+  localStorage.setItem('admin_token', t);
+  location.reload();
+}
+
+function logout() {
+  localStorage.removeItem('admin_token');
+  location.reload();
+}
+
+async function fetchAPI(path) {
+  const sep = path.includes('?') ? '&' : '?';
+  const res = await fetch(`/api${path}${sep}token=${token}`);
+  return res.json();
+}
+
+async function updateStatus(id, status) {
+  try {
+    const res = await fetch(`/api/bookings/${id}?token=${token}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      showMsg('状态已更新', 'success');
+      loadAll();
+    } else {
+      showMsg(data.error || '更新失败', 'error');
+    }
+  } catch (e) {
+    showMsg('网络错误', 'error');
+  }
+}
+
+function showMsg(text, type) {
+  const el = document.createElement('div');
+  el.className = 'msg ' + type;
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2500);
+}
+
+async function loadStats() {
+  try {
+    const res = await fetchAPI('/stats');
+    if (!res.success) return;
+    const d = res.data;
+    document.getElementById('statToday').textContent = d.today || 0;
+    document.getElementById('statTotal').textContent = (d.byType || []).reduce((s, t) => s + t.count, 0);
+
+    // Count by status from bookings
+    const bRes = await fetchAPI('/bookings?pageSize=100');
+    if (bRes.success) {
+      const bookings = bRes.data || [];
+      document.getElementById('statPending').textContent = bookings.filter(b => b.status === 'pending').length;
+      document.getElementById('statConfirmed').textContent = bookings.filter(b => b.status === 'confirmed').length;
+    }
+
+    // Type stats
+    const typeArea = document.getElementById('typeStats');
+    typeArea.innerHTML = (d.byType || []).map(t =>
+      `<span class="type-badge ${t.type}">${TYPE_NAMES[t.type] || t.type}: ${t.count}</span>`
+    ).join('');
+  } catch (e) {
+    console.error('Stats error:', e);
+  }
+}
+
+async function loadBookings(page = 1) {
+  currentPage = page;
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '<tr><td colspan="11" class="loading">加载中...</td></tr>';
+
+  try {
+    const res = await fetchAPI(`/bookings?page=${page}&pageSize=15`);
+    if (!res.success) {
+      tbody.innerHTML = '<tr><td colspan="11" class="error">加载失败：' + (res.error || '未知错误') + '</td></tr>';
+      return;
+    }
+
+    if (!res.data || res.data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="11" class="empty">暂无预约数据</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = res.data.map(b => `
+      <tr>
+        <td>#${b.id}</td>
+        <td><span class="type-tag ${b.type}">${TYPE_NAMES[b.type] || b.type}</span></td>
+        <td>${esc(b.name)}</td>
+        <td>${esc(b.phone)}</td>
+        <td>${CITY_NAMES[b.city] || b.city || '-'}</td>
+        <td>${esc(b.company) || '-'}</td>
+        <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(b.note||'')}">${esc(b.note) || '-'}</td>
+        <td style="font-size:0.8rem;color:#6b7280;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escAttr(b.extra || '')}">${fmtExtra(b.extra)}</td>
+        <td><span class="status ${b.status}">${STATUS_NAMES[b.status] || b.status}</span></td>
+        <td style="font-size:0.8rem;color:#6b7280">${b.created_at || '-'}</td>
+        <td>
+          <select class="st" onchange="updateStatus(${b.id}, this.value)" style="width:80px">
+            <option value="">操作</option>
+            <option value="pending" ${b.status==='pending'?'selected':''}>待联系</option>
+            <option value="contacted" ${b.status==='contacted'?'selected':''}>已联系</option>
+            <option value="confirmed" ${b.status==='confirmed'?'selected':''}>已确认</option>
+            <option value="completed" ${b.status==='completed'?'selected':''}>已完成</option>
+            <option value="cancelled" ${b.status==='cancelled'?'selected':''}>已取消</option>
+          </select>
+        </td>
+      </tr>
+    `).join('');
+
+    // Pagination
+    const totalPages = Math.ceil(res.total / res.pageSize);
+    const pag = document.getElementById('pagination');
+    let html = `<button ${page <= 1 ? 'disabled' : ''} onclick="loadBookings(${page - 1})">上一页</button>`;
+    for (let i = 1; i <= totalPages && i <= 10; i++) {
+      html += `<button class="${i === page ? 'active' : ''}" onclick="loadBookings(${i})">${i}</button>`;
+    }
+    html += `<button ${page >= totalPages ? 'disabled' : ''} onclick="loadBookings(${page + 1})">下一页</button>`;
+    pag.innerHTML = html;
+
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="10" class="error">网络错误，请检查服务是否启动</td></tr>';
+  }
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+function escAttr(s) { return esc(s).replace(/"/g, '&quot;'); }
+
+// 附加信息列：解析 extra JSON，展示关键字段摘要
+function fmtExtra(extra) {
+  if (!extra) return '-';
+  try {
+    const o = typeof extra === 'string' ? JSON.parse(extra) : extra;
+    if (!o || typeof o !== 'object') return '-';
+    const parts = Object.entries(o).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join('/') : v}`);
+    return parts.join(' · ') || '-';
+  } catch (e) { return '-'; }
+}
+
+function loadAll() { loadStats(); loadBookings(currentPage); }
+
+/* ==================== 内容管理 ==================== */
+const CONTENT_BLOCKS = [
+  { key: 'meta', name: '页面信息', fields: [
+    { key: 'title', label: '页面标题', type: 'text' },
+    { key: 'description', label: '页面描述（SEO）', type: 'textarea' },
+  ]},
+  { key: 'hero', name: 'Hero 首屏', fields: [
+    { key: 'badge', label: '徽标文字', type: 'text' },
+    { key: 'title', label: '大标题', type: 'rich' },
+    { key: 'subtitle', label: '副标题', type: 'rich' },
+    { key: 'cta1', label: '主按钮文字', type: 'text' },
+    { key: 'cta2', label: '次按钮文字', type: 'text' },
+    { key: 'stats', label: '数据统计', type: 'list', itemName: '统计项', sub: [
+      { key: 'value', label: '数值', type: 'text' },
+      { key: 'label', label: '说明', type: 'text' },
+    ]},
+  ]},
+  { key: 'painPoints', name: '行业痛点', fields: [
+    { key: 'title', label: '区块标题', type: 'text' },
+    { key: 'subtitle', label: '区块副标题', type: 'text' },
+    { key: 'col1Title', label: '左列标题', type: 'text' },
+    { key: 'col1Items', label: '企业痛点列表', type: 'list', itemName: '痛点', sub: [
+      { key: 'icon', label: '图标(emoji)', type: 'text' },
+      { key: 'title', label: '标题', type: 'text' },
+      { key: 'desc', label: '描述', type: 'text' },
+    ]},
+    { key: 'col2Title', label: '右列标题', type: 'text' },
+    { key: 'col2Items', label: '县域痛点列表', type: 'list', itemName: '痛点', sub: [
+      { key: 'icon', label: '图标(emoji)', type: 'text' },
+      { key: 'title', label: '标题', type: 'text' },
+      { key: 'desc', label: '描述', type: 'text' },
+    ]},
+    { key: 'solve', label: '底部结论', type: 'rich' },
+  ]},
+  { key: 'modules', name: '六大服务', fields: [
+    { key: 'title', label: '区块标题', type: 'text' },
+    { key: 'subtitle', label: '区块副标题', type: 'text' },
+    { key: 'cards', label: '服务卡片', type: 'list', itemName: '卡片', sub: [
+      { key: 'icon', label: '图标(emoji)', type: 'text' },
+      { key: 'title', label: '标题', type: 'text' },
+      { key: 'desc', label: '描述', type: 'textarea' },
+      { key: 'btnText', label: '按钮文字', type: 'text' },
+      { key: 'btnType', label: '按钮动作', type: 'select', options: [['community','申请社群'],['salon','预约沙龙'],['tour','报名游学'],['visit','预约展厅'],['course','报名课程'],['enterprise','申请培训'],['consult','免费咨询']] },
+    ]},
+  ]},
+  { key: 'centers', name: '四大中心', fields: [
+    { key: 'title', label: '区块标题', type: 'text' },
+    { key: 'subtitle', label: '区块副标题', type: 'text' },
+    { key: 'cards', label: '中心卡片', type: 'list', itemName: '中心', sub: [
+      { key: 'icon', label: '图标(emoji)', type: 'text' },
+      { key: 'title', label: '标题', type: 'text' },
+      { key: 'desc', label: '描述', type: 'textarea' },
+      { key: 'tags', label: '标签（中文逗号分隔）', type: 'tags' },
+    ]},
+  ]},
+  { key: 'syllabus', name: '课程大纲', fields: [
+    { key: 'title', label: '区块标题', type: 'text' },
+    { key: 'subtitle', label: '区块副标题', type: 'text' },
+    { key: 'items', label: '课程模块', type: 'list', itemName: '模块', sub: [
+      { key: 'num', label: '编号', type: 'text' },
+      { key: 'title', label: '标题', type: 'text' },
+      { key: 'desc', label: '内容', type: 'textarea' },
+    ]},
+  ]},
+  { key: 'instructors', name: '讲师团队', fields: [
+    { key: 'title', label: '区块标题', type: 'text' },
+    { key: 'subtitle', label: '区块副标题', type: 'text' },
+    { key: 'cards', label: '讲师卡片', type: 'list', itemName: '讲师', sub: [
+      { key: 'name', label: '姓名', type: 'text' },
+      { key: 'avatar', label: '头像文字', type: 'text' },
+      { key: 'avatarImg', label: '头像图片', type: 'image' },
+      { key: 'role', label: '头衔', type: 'text' },
+      { key: 'bio', label: '简介', type: 'textarea' },
+    ]},
+  ]},
+  { key: 'why', name: '五大唯一', fields: [
+    { key: 'title', label: '区块标题', type: 'text' },
+    { key: 'subtitle', label: '区块副标题', type: 'text' },
+    { key: 'cards', label: '优势卡片', type: 'list', itemName: '优势', sub: [
+      { key: 'num', label: '编号', type: 'text' },
+      { key: 'title', label: '标题', type: 'text' },
+      { key: 'desc', label: '描述', type: 'textarea' },
+    ]},
+  ]},
+  { key: 'showroom', name: '展厅', fields: [
+    { key: 'title', label: '区块标题', type: 'text' },
+    { key: 'subtitle', label: '区块副标题', type: 'text' },
+    { key: 'items', label: '展区', type: 'list', itemName: '展区', sub: [
+      { key: 'icon', label: '图标(emoji)', type: 'text' },
+      { key: 'title', label: '标题', type: 'text' },
+      { key: 'desc', label: '描述', type: 'text' },
+      { key: 'img', label: '图片(选填)', type: 'image' },
+      { key: 'large', label: '大图格', type: 'boolean' },
+    ]},
+  ]},
+  { key: 'pricing', name: '价格', fields: [
+    { key: 'title', label: '区块标题', type: 'text' },
+    { key: 'subtitle', label: '区块副标题', type: 'text' },
+    { key: 'cards', label: '价格卡片', type: 'list', itemName: '卡片', sub: [
+      { key: 'name', label: '名称', type: 'text' },
+      { key: 'price', label: '价格', type: 'text' },
+      { key: 'period', label: '价格说明', type: 'text' },
+      { key: 'priceStyle', label: '价格样式(选填)', type: 'text' },
+      { key: 'features', label: '权益列表（每行一条）', type: 'lines' },
+      { key: 'btnText', label: '按钮文字', type: 'text' },
+      { key: 'btnType', label: '按钮动作', type: 'select', options: [['community','申请社群'],['salon','预约沙龙'],['tour','报名游学'],['visit','预约展厅'],['course','报名课程'],['enterprise','申请培训'],['consult','免费咨询']] },
+      { key: 'featured', label: '最受欢迎(高亮)', type: 'boolean' },
+      { key: 'badge', label: '角标(选填)', type: 'text' },
+    ]},
+  ]},
+  { key: 'faq', name: '常见问题', fields: [
+    { key: 'title', label: '区块标题', type: 'text' },
+    { key: 'items', label: '问答列表', type: 'list', itemName: '问题', sub: [
+      { key: 'q', label: '问题', type: 'text' },
+      { key: 'a', label: '答案', type: 'textarea' },
+    ]},
+  ]},
+  { key: 'cta', name: 'CTA 横幅', fields: [
+    { key: 'title', label: '标题', type: 'text' },
+    { key: 'subtitle', label: '副标题', type: 'text' },
+  ]},
+  { key: 'footer', name: '页脚', fields: [
+    { key: 'brand', label: '品牌名', type: 'rich' },
+    { key: 'desc', label: '品牌描述', type: 'rich' },
+    { key: 'copyright', label: '版权信息', type: 'text' },
+  ]},
+  { key: 'floatConsult', name: '悬浮咨询', fields: [
+    { key: 'text', label: '按钮文字', type: 'text' },
+  ]},
+];
+
+let currentBlockKey = null, contentData = null;
+
+function switchTab(name) {
+  document.getElementById('pageBookings').style.display = name === 'bookings' ? 'block' : 'none';
+  document.getElementById('pageContent').style.display = name === 'content' ? 'block' : 'none';
+  document.getElementById('tabBtnBookings').classList.toggle('active', name === 'bookings');
+  document.getElementById('tabBtnContent').classList.toggle('active', name === 'content');
+  if (name === 'content') {
+    renderBlockNav();
+    loadBlock(CONTENT_BLOCKS[0].key);
+  }
+}
+
+function renderBlockNav() {
+  document.getElementById('contentNav').innerHTML = CONTENT_BLOCKS.map(b =>
+    `<button class="cbn-item" data-key="${b.key}" onclick="loadBlock('${b.key}')">${b.name}</button>`
+  ).join('');
+}
+
+async function loadBlock(key) {
+  currentBlockKey = key;
+  document.querySelectorAll('.cbn-item').forEach(b => b.classList.toggle('active', b.dataset.key === key));
+  const block = CONTENT_BLOCKS.find(b => b.key === key);
+  document.getElementById('cfTitle').textContent = block.name;
+  if (!contentData) {
+    const res = await fetchAPI('/content');
+    contentData = res.data || {};
+  }
+  renderForm(block, contentData[key] || {});
+}
+
+function fieldInputHtml(f, val) {
+  if (f.type === 'text') {
+    return `<input class="cf-input" data-fkey="${f.key}" value="${escAttr(val ?? '')}">`;
+  }
+  if (f.type === 'textarea') {
+    return `<textarea class="cf-input" data-fkey="${f.key}" rows="4">${esc(val ?? '')}</textarea>`;
+  }
+  if (f.type === 'rich') {
+    return `<textarea class="cf-input" data-fkey="${f.key}" rows="4">${esc(val ?? '')}</textarea>
+      <div class="cf-hint">支持简单 HTML：&lt;br&gt; 换行、&lt;span class="highlight"&gt;高亮文字&lt;/span&gt;</div>`;
+  }
+  if (f.type === 'select') {
+    const opts = (f.options || []).map(([v, t]) => `<option value="${v}" ${v === val ? 'selected' : ''}>${t}</option>`).join('');
+    return `<select class="cf-input" data-fkey="${f.key}">${opts}</select>`;
+  }
+  if (f.type === 'image') {
+    return `<div class="cf-imgrow">
+        <input class="cf-input" data-fkey="${f.key}" value="${escAttr(val ?? '')}" placeholder="图片 URL 或上传">
+        <input type="file" accept="image/*" class="cf-file">
+        <button class="refresh-btn" onclick="uploadImg(this)">上传图片</button>
+        <img class="cf-preview" src="${escAttr(val ?? '')}" onerror="this.style.display='none'">
+      </div>`;
+  }
+  if (f.type === 'boolean') {
+    return `<label class="cf-check"><input type="checkbox" data-fkey="${f.key}" ${val ? 'checked' : ''}> 是</label>`;
+  }
+  if (f.type === 'tags') {
+    return `<input class="cf-input" data-fkey="${f.key}" value="${escAttr((val || []).join('，'))}" placeholder="中文逗号分隔，如：认知突围，价值重构">`;
+  }
+  if (f.type === 'lines') {
+    return `<textarea class="cf-input" data-fkey="${f.key}" rows="6">${esc((val || []).join('\n'))}</textarea>
+      <div class="cf-hint">每行一条</div>`;
+  }
+  if (f.type === 'list') {
+    const items = Array.isArray(val) ? val : [];
+    const rows = items.map(item => listRowHtml(f, item)).join('');
+    return `<div class="cf-listrows" data-fkey="${f.key}">${rows}</div>
+      <button class="cf-add" onclick="addListRow('${f.key}')">+ 添加${f.itemName || '一行'}</button>`;
+  }
+  return '';
+}
+
+function listRowHtml(f, item) {
+  const cells = f.sub.map(sf => {
+    let input;
+    if (sf.type === 'text' || sf.type === 'textarea') {
+      input = sf.type === 'textarea'
+        ? `<textarea class="cf-input" data-sfkey="${sf.key}" rows="2">${esc(item[sf.key] ?? '')}</textarea>`
+        : `<input class="cf-input" data-sfkey="${sf.key}" value="${escAttr(item[sf.key] ?? '')}">`;
+    } else if (sf.type === 'image') {
+      input = `<div class="cf-imgrow">
+          <input class="cf-input" data-sfkey="${sf.key}" value="${escAttr(item[sf.key] ?? '')}" placeholder="图片 URL 或上传">
+          <input type="file" accept="image/*" class="cf-file">
+          <button class="refresh-btn" onclick="uploadImg(this)">上传</button>
+          <img class="cf-preview" src="${escAttr(item[sf.key] ?? '')}" onerror="this.style.display='none'">
+        </div>`;
+    } else if (sf.type === 'boolean') {
+      input = `<label class="cf-check"><input type="checkbox" data-sfkey="${sf.key}" ${item[sf.key] ? 'checked' : ''}> 是</label>`;
+    } else if (sf.type === 'select') {
+      const opts = (sf.options || []).map(([v, t]) => `<option value="${v}" ${v === item[sf.key] ? 'selected' : ''}>${t}</option>`).join('');
+      input = `<select class="cf-input" data-sfkey="${sf.key}">${opts}</select>`;
+    } else {
+      input = `<input class="cf-input" data-sfkey="${sf.key}" value="${escAttr(item[sf.key] ?? '')}">`;
+    }
+    return `<div class="cf-cell"><label class="cf-label cf-label-sm">${sf.label}</label>${input}</div>`;
+  }).join('');
+  return `<div class="cf-row">${cells}<button class="cf-del" onclick="this.closest('.cf-row').remove()">删除</button></div>`;
+}
+
+function addListRow(fkey) {
+  const f = CONTENT_BLOCKS.find(b => b.key === currentBlockKey).fields.find(x => x.key === fkey);
+  document.querySelector(`.cf-listrows[data-fkey="${fkey}"]`).insertAdjacentHTML('beforeend', listRowHtml(f, {}));
+}
+
+function renderForm(block, value) {
+  document.getElementById('cfFields').innerHTML = block.fields.map(f =>
+    `<div class="cf-field"><label class="cf-label">${f.label}</label>${fieldInputHtml(f, value[f.key])}</div>`
+  ).join('');
+}
+
+// 图片上传：找当前按钮所在 .cf-imgrow，回填 URL 并刷新预览
+async function uploadImg(btn) {
+  const row = btn.closest('.cf-imgrow');
+  const fileInput = row.querySelector('input[type="file"]');
+  if (!fileInput.files || !fileInput.files[0]) { showMsg('请先选择图片文件', 'error'); return; }
+  const fd = new FormData();
+  fd.append('file', fileInput.files[0]);
+  try {
+    const res = await fetch(`/api/upload?token=${token}`, { method: 'POST', body: fd });
+    const d = await res.json();
+    if (d.success) {
+      row.querySelector('.cf-input').value = d.url;
+      const prev = row.querySelector('.cf-preview');
+      prev.src = d.url; prev.style.display = '';
+      showMsg('图片已上传', 'success');
+    } else {
+      showMsg(d.error || '上传失败', 'error');
+    }
+  } catch (e) {
+    showMsg('上传失败：网络错误', 'error');
+  }
+}
+
+function collectBlock() {
+  const block = CONTENT_BLOCKS.find(b => b.key === currentBlockKey);
+  const value = {};
+  block.fields.forEach(f => {
+    if (f.type === 'list') {
+      value[f.key] = Array.from(document.querySelectorAll(`.cf-listrows[data-fkey="${f.key}"] .cf-row`)).map(row => {
+        const item = {};
+        f.sub.forEach(sf => {
+          if (sf.type === 'boolean') {
+            const cb = row.querySelector(`input[data-sfkey="${sf.key}"]`);
+            item[sf.key] = cb ? cb.checked : false;
+          } else if (sf.type === 'image' || sf.type === 'text' || sf.type === 'select') {
+            const inp = row.querySelector(`[data-sfkey="${sf.key}"]`);
+            item[sf.key] = inp ? inp.value.trim() : '';
+          } else if (sf.type === 'textarea') {
+            const inp = row.querySelector(`[data-sfkey="${sf.key}"]`);
+            item[sf.key] = inp ? inp.value.trim() : '';
+          } else {
+            const inp = row.querySelector(`[data-sfkey="${sf.key}"]`);
+            item[sf.key] = inp ? inp.value.trim() : '';
+          }
+        });
+        return item;
+      });
+    } else if (f.type === 'boolean') {
+      const cb = document.querySelector(`#cfFields input[data-fkey="${f.key}"]`);
+      value[f.key] = cb ? cb.checked : false;
+    } else if (f.type === 'tags') {
+      const inp = document.querySelector(`#cfFields input[data-fkey="${f.key}"]`);
+      value[f.key] = (inp ? inp.value : '').split(/[，,]/).map(s => s.trim()).filter(Boolean);
+    } else if (f.type === 'lines') {
+      const inp = document.querySelector(`#cfFields textarea[data-fkey="${f.key}"]`);
+      value[f.key] = (inp ? inp.value : '').split('\n').map(s => s.trim()).filter(Boolean);
+    } else {
+      const inp = document.querySelector(`#cfFields [data-fkey="${f.key}"]`);
+      value[f.key] = inp ? inp.value.trim() : '';
+    }
+  });
+  return value;
+}
+
+async function saveBlock() {
+  if (!currentBlockKey) return;
+  const value = collectBlock();
+  try {
+    const res = await fetch(`/api/content/${currentBlockKey}?token=${token}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ value }),
+    });
+    const d = await res.json();
+    if (d.success) {
+      contentData[currentBlockKey] = value;
+      showMsg('已保存，前台刷新即可生效', 'success');
+    } else {
+      showMsg(d.error || '保存失败', 'error');
+    }
+  } catch (e) {
+    showMsg('保存失败：网络错误', 'error');
+  }
+}
+
+async function resetBlock() {
+  if (!currentBlockKey || !confirm('确定将该区块恢复为默认内容？')) return;
+  try {
+    const res = await fetch('/api/content-defaults');
+    const d = await res.json();
+    const def = d.data[currentBlockKey];
+    if (!def) { showMsg('该区块无默认内容', 'error'); return; }
+    const put = await fetch(`/api/content/${currentBlockKey}?token=${token}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ value: def }),
+    });
+    const pd = await put.json();
+    if (pd.success) {
+      contentData[currentBlockKey] = def;
+      loadBlock(currentBlockKey);
+      showMsg('已恢复默认内容', 'success');
+    } else {
+      showMsg(pd.error || '恢复失败', 'error');
+    }
+  } catch (e) {
+    showMsg('恢复失败：网络错误', 'error');
+  }
+}
+
+// Init
+if (login()) {
+  loadAll();
+  // Auto refresh every 30 seconds
+  setInterval(loadStats, 30000);
+}
+</script>
+</body>
+</html>

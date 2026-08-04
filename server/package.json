@@ -1,0 +1,16 @@
+{
+  "name": "laikedixiong-api",
+  "version": "1.0.0",
+  "description": "来客兄弟 AI赋能实体门店 - 后端API服务",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "multer": "^2.2.0",
+    "sql.js": "^1.14.1"
+  }
+}
