@@ -117,6 +117,14 @@ select.st{font-size:0.8rem;padding:4px 8px;border-radius:8px;background:rgba(255
 .cf-check{display:inline-flex;align-items:center;gap:6px;color:#d1d5db;font-size:0.88rem}
 .cf-check input{accent-color:#7c3aed}
 .cf-tip{margin-top:16px;font-size:0.8rem;color:#6b7280}
+
+/* Booking Filters */
+.filter-bar{display:flex;flex-direction:column;gap:10px;padding:16px 0}
+.filter-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-label{font-size:0.8rem;color:#6b7280;font-weight:600;margin-right:4px}
+.filter-chip{padding:6px 14px;border-radius:50px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#9ca3af;cursor:pointer;font-size:0.8rem;transition:all 0.2s}
+.filter-chip:hover{background:rgba(124,58,237,0.1)}
+.filter-chip.active{background:rgba(124,58,237,0.25);border-color:#7c3aed;color:#a78bfa;font-weight:600}
 </style>
 </head>
 <body>
@@ -152,6 +160,29 @@ select.st{font-size:0.8rem;padding:4px 8px;border-radius:8px;background:rgba(255
 <!-- Type Stats -->
 <div class="type-stats" id="typeStats"></div>
 
+<!-- Filters -->
+<div class="filter-bar">
+  <div class="filter-group">
+    <span class="filter-label">申请类型：</span>
+    <button class="filter-chip active" data-f-type="" onclick="setFilter('type','')">全部</button>
+    <button class="filter-chip" data-f-type="community" onclick="setFilter('type','community')">🤝 社群申请</button>
+    <button class="filter-chip" data-f-type="salon" onclick="setFilter('type','salon')">🎤 沙龙预约</button>
+    <button class="filter-chip" data-f-type="tour" onclick="setFilter('type','tour')">✈️ 游学报名</button>
+    <button class="filter-chip" data-f-type="visit" onclick="setFilter('type','visit')">🏛️ 展厅参观</button>
+    <button class="filter-chip" data-f-type="course" onclick="setFilter('type','course')">📚 课程报名</button>
+    <button class="filter-chip" data-f-type="enterprise" onclick="setFilter('type','enterprise')">🏢 企业培训</button>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">跟进状态：</span>
+    <button class="filter-chip active" data-f-status="" onclick="setFilter('status','')">全部</button>
+    <button class="filter-chip" data-f-status="pending" onclick="setFilter('status','pending')">待联系</button>
+    <button class="filter-chip" data-f-status="contacted" onclick="setFilter('status','contacted')">已联系</button>
+    <button class="filter-chip" data-f-status="confirmed" onclick="setFilter('status','confirmed')">已确认</button>
+    <button class="filter-chip" data-f-status="completed" onclick="setFilter('status','completed')">已完成</button>
+    <button class="filter-chip" data-f-status="cancelled" onclick="setFilter('status','cancelled')">已取消</button>
+  </div>
+</div>
+
 <!-- Table -->
 <div class="table-wrap">
   <table>
@@ -166,6 +197,7 @@ select.st{font-size:0.8rem;padding:4px 8px;border-radius:8px;background:rgba(255
         <th>备注</th>
         <th>附加信息</th>
         <th>状态</th>
+        <th>支付</th>
         <th>时间</th>
         <th>操作</th>
       </tr>
@@ -335,17 +367,19 @@ async function loadStats() {
 async function loadBookings(page = 1) {
   currentPage = page;
   const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = '<tr><td colspan="11" class="loading">加载中...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="12" class="loading">加载中...</td></tr>';
 
   try {
-    const res = await fetchAPI(`/bookings?page=${page}&pageSize=15`);
+    const qs = `page=${page}&pageSize=15&type=${encodeURIComponent(filters.type)}&status=${encodeURIComponent(filters.status)}`;
+    const res = await fetchAPI(`/bookings?${qs}`);
     if (!res.success) {
-      tbody.innerHTML = '<tr><td colspan="11" class="error">加载失败：' + (res.error || '未知错误') + '</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="12" class="error">加载失败：' + (res.error || '未知错误') + '</td></tr>';
       return;
     }
 
     if (!res.data || res.data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="11" class="empty">暂无预约数据</td></tr>';
+      const hasFilter = filters.type || filters.status;
+      tbody.innerHTML = `<tr><td colspan="12" class="empty">${hasFilter ? '该筛选条件下暂无预约' : '暂无预约数据'}</td></tr>`;
       return;
     }
 
@@ -360,6 +394,7 @@ async function loadBookings(page = 1) {
         <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(b.note||'')}">${esc(b.note) || '-'}</td>
         <td style="font-size:0.8rem;color:#6b7280;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escAttr(b.extra || '')}">${fmtExtra(b.extra)}</td>
         <td><span class="status ${b.status}">${STATUS_NAMES[b.status] || b.status}</span></td>
+        <td>${payCell(b)}</td>
         <td style="font-size:0.8rem;color:#6b7280">${b.created_at || '-'}</td>
         <td>
           <select class="st" onchange="updateStatus(${b.id}, this.value)" style="width:80px">
@@ -404,6 +439,26 @@ function fmtExtra(extra) {
 }
 
 function loadAll() { loadStats(); loadBookings(currentPage); }
+
+// 类型/状态筛选（course 类型同时展示支付状态）
+let filters = { type: '', status: '' };
+
+function setFilter(kind, val) {
+  filters[kind] = val;
+  document.querySelectorAll(`.filter-chip[data-f-${kind}]`).forEach(c => {
+    c.classList.toggle('active', c.getAttribute(`data-f-${kind}`) === val);
+  });
+  loadBookings(1);
+}
+
+// 支付列：仅课程报名显示（关联订单状态），其他类型显示 -
+function payCell(b) {
+  if (b.type !== 'course') return '<span style="color:#4b5563;font-size:0.8rem">-</span>';
+  if (b.order_status === 'paid') {
+    return `<span class="status confirmed" title="订单号 ${escAttr(b.order_no || '')}">已支付</span>`;
+  }
+  return '<span class="status pending" title="付款后请在「订单管理」确认收款">待支付</span>';
+}
 
 /* ==================== 内容管理 ==================== */
 const CONTENT_BLOCKS = [

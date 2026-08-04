@@ -20,8 +20,8 @@ function createBooking(data) {
   return booking;
 }
 
-function listBookings(page, pageSize) {
-  return bookingRepo.listBookings(page, pageSize);
+function listBookings(page, pageSize, filters) {
+  return bookingRepo.listBookings(page, pageSize, filters);
 }
 
 function getBookingById(id) {

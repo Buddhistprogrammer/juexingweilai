@@ -97,7 +97,11 @@ router.get('/bookings', (req, res) => {
     if (!requireAuth(req, res)) return;
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const pageSize = Math.min(100, Math.max(1, parseInt(req.query.pageSize) || 20));
-    const result = bookingService.listBookings(page, pageSize);
+    // 筛选：?type=salon&status=paid（type/status 枚举由前端控制，仅透传）
+    const filters = {};
+    if (req.query.type) filters.type = req.query.type;
+    if (req.query.status) filters.status = req.query.status;
+    const result = bookingService.listBookings(page, pageSize, filters);
     res.json({ success: true, ...result });
   } catch (err) {
     console.error('[API] 查询预约失败:', err);

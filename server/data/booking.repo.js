@@ -24,11 +24,22 @@ function getBookingById(id) {
   return getOne('SELECT * FROM bookings WHERE id = ?', [id]);
 }
 
-function listBookings(page = 1, pageSize = 20) {
+// 筛选：{ type, status } 可选；LEFT JOIN orders 关联课程报名支付状态
+function listBookings(page = 1, pageSize = 20, filters = {}) {
   const offset = (page - 1) * pageSize;
-  const totalRow = getOne('SELECT COUNT(*) as total FROM bookings');
+  const where = [];
+  const params = [];
+  if (filters.type) { where.push('b.type = ?'); params.push(filters.type); }
+  if (filters.status) { where.push('b.status = ?'); params.push(filters.status); }
+  const whereSql = where.length ? ' WHERE ' + where.join(' AND ') : '';
+
+  const totalRow = getOne(`SELECT COUNT(*) as total FROM bookings b${whereSql}`, params);
   const total = totalRow ? totalRow.total : 0;
-  const data = getAll('SELECT * FROM bookings ORDER BY created_at DESC LIMIT ? OFFSET ?', [pageSize, offset]);
+  const data = getAll(
+    `SELECT b.*, o.status AS order_status, o.order_no AS order_no
+     FROM bookings b LEFT JOIN orders o ON o.booking_id = b.id
+     ${whereSql} ORDER BY b.created_at DESC LIMIT ? OFFSET ?`,
+    [...params, pageSize, offset]);
   return { total, page, pageSize, data };
 }
 
