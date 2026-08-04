@@ -66,36 +66,35 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 PROJECT_DIR="/opt/laikedixiong-site"
 
-# 创建目录结构
+# 创建目录结构（/opt 下目录归 www-data，需 sudo）
 echo "  创建项目目录..."
-mkdir -p $PROJECT_DIR/server/logs
-mkdir -p $PROJECT_DIR/deploy
-mkdir -p /opt/laikedixiong-site/logs
+sudo mkdir -p $PROJECT_DIR/server/logs
+sudo mkdir -p $PROJECT_DIR/deploy
+sudo mkdir -p /opt/laikedixiong-site/logs
 
 # 解压项目文件
 echo "  解压项目文件..."
-cd $PROJECT_DIR
-tar -xzf /tmp/laikedixiong-deploy.tar.gz --overwrite
-rm /tmp/laikedixiong-deploy.tar.gz
+sudo tar -xzf /tmp/laikedixiong-deploy.tar.gz -C $PROJECT_DIR --overwrite
+sudo rm /tmp/laikedixiong-deploy.tar.gz
 
 # 安装 Node.js（如果未安装）
 if ! command -v node &> /dev/null; then
     echo "  安装 Node.js 22.x..."
-    curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-    apt-get install -y nodejs
+    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo bash -
+    sudo apt-get install -y nodejs
 fi
 echo "  Node.js $(node -v) ✓"
 
 # 安装依赖
 echo "  安装 npm 依赖..."
 cd $PROJECT_DIR/server
-npm install --production
+sudo npm install --production
 echo "  ✓ npm 依赖安装完成"
 
 # 设置权限
 echo "  设置文件权限..."
-chown -R www-data:www-data $PROJECT_DIR 2>/dev/null || chown -R 1000:1000 $PROJECT_DIR
-chmod -R 755 $PROJECT_DIR
+sudo chown -R www-data:www-data $PROJECT_DIR 2>/dev/null || sudo chown -R 1000:1000 $PROJECT_DIR
+sudo chmod -R 755 $PROJECT_DIR
 
 echo -e "${GREEN}  ✓ 服务器端安装完成${NC}"
 ENDSSH
@@ -103,9 +102,9 @@ ENDSSH
 # ─── Step 4: 配置 systemd 服务 ───
 echo -e "${YELLOW}[4/5] 配置 systemd 服务...${NC}"
 
-# 上传配置文件
+# 上传配置文件（.env.example 只用于「不存在 .env 时」兜底创建，不覆盖已有配置）
 scp "$(dirname "$0")/laikedixiong.service" "${SERVER_USER}@${SERVER_IP}:/tmp/laikedixiong.service"
-scp "$(dirname "$0")/.env.example" "${SERVER_USER}@${SERVER_IP}:${PROJECT_DIR}/deploy/.env"
+scp "$(dirname "$0")/.env.example" "${SERVER_USER}@${SERVER_IP}:/tmp/laikedixiong.env.example"
 
 ssh "${SERVER_USER}@${SERVER_IP}" bash << 'ENDSSH'
 set -e
@@ -113,14 +112,15 @@ set -e
 PROJECT_DIR="/opt/laikedixiong-site"
 
 # 注册 systemd 服务
-cp /tmp/laikedixiong.service /etc/systemd/system/laikedixiong.service
-systemctl daemon-reload
+sudo cp /tmp/laikedixiong.service /etc/systemd/system/laikedixiong.service
+sudo systemctl daemon-reload
 
-# 如果 env 文件不存在，创建默认的
+# 如果 env 文件不存在，创建默认的（存在则保留服务器上的自定义配置）
 if [ ! -f "$PROJECT_DIR/deploy/.env" ]; then
-    cp "$PROJECT_DIR/deploy/.env.example" "$PROJECT_DIR/deploy/.env"
+    sudo cp /tmp/laikedixiong.env.example "$PROJECT_DIR/deploy/.env"
     echo "  ⚠ 请编辑 $PROJECT_DIR/deploy/.env 设置 ADMIN_TOKEN"
 fi
+sudo rm -f /tmp/laikedixiong.env.example
 
 echo -e "\033[0;32m  ✓ systemd 配置完成\033[0m"
 ENDSSH
@@ -128,8 +128,8 @@ ENDSSH
 # ─── Step 5: 启动服务 ───
 echo -e "${YELLOW}[5/5] 启动服务...${NC}"
 ssh "${SERVER_USER}@${SERVER_IP}" "
-    systemctl stop laikedixiong.service 2>/dev/null || true
-    systemctl start laikedixiong.service
+    sudo systemctl stop laikedixiong.service 2>/dev/null || true
+    sudo systemctl start laikedixiong.service
     sleep 2
     systemctl status laikedixiong.service --no-pager
 "
