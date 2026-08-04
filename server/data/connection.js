@@ -110,6 +110,16 @@ function createTables() {
       paid_at        TEXT
     )
   `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS prompt_games (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      level_reached INTEGER NOT NULL,
+      attempts      INTEGER DEFAULT 0,
+      city          TEXT,
+      created_at    TEXT    DEFAULT (datetime('now','localtime'))
+    )
+  `);
 }
 
 // ==========================================

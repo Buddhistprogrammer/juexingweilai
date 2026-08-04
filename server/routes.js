@@ -13,7 +13,31 @@ const aiTestService = require('./services/aiTest.service');
 const contentService = require('./services/content.service');
 const orderService = require('./services/order.service');
 const { wechatPay } = require('./payment');
+const gameLevels = require('./promptgame/levels');
+const { chat, detectLeak, isConfigured: llmConfigured, isMock: llmMock } = require('./promptgame/llm');
+const promptGameRepo = require('./data/promptGame.repo');
 const cityConfig = require('./city.config');
+
+// 提示词攻防游戏限流：每 IP 每分钟 5 次（内存实现，防刷 LLM API 烧钱）
+const rateMap = new Map(); // ip -> [timestamps]
+function rateLimit(req, res, next) {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const window = 60 * 1000;
+  const times = (rateMap.get(ip) || []).filter(t => now - t < window);
+  if (times.length >= 5) {
+    return res.status(429).json({ success: false, error: '操作太频繁，请稍后再试' });
+  }
+  times.push(now);
+  rateMap.set(ip, times);
+  // 定时清理，防止内存膨胀
+  if (rateMap.size > 5000) {
+    for (const [k, v] of rateMap) {
+      if (v.every(t => now - t >= window)) rateMap.delete(k);
+    }
+  }
+  next();
+}
 
 const validTypes = ['community', 'salon', 'tour', 'visit', 'course', 'enterprise'];
 const validStatuses = ['pending', 'contacted', 'confirmed', 'completed', 'cancelled'];
@@ -349,6 +373,64 @@ router.post('/pay/notify', (req, res) => {
   } catch (err) {
     console.error('[支付回调] 处理失败:', err.message);
     res.json({ code: 'FAIL', message: err.message });
+  }
+});
+
+// ==========================================
+// GET /api/prompt-game/status — 攻防游戏可用性（前端初始化探测）
+// ==========================================
+router.get('/prompt-game/status', (req, res) => {
+  res.json({ success: true, data: { available: llmConfigured() || llmMock() } });
+});
+
+// ==========================================
+// POST /api/prompt-game/move — 攻防游戏：发送提示词，AI 守密回复
+// ==========================================
+router.post('/prompt-game/move', rateLimit, async (req, res) => {
+  try {
+    const { level, messages } = req.body;
+    const cfg = gameLevels.find(l => l.level === parseInt(level));
+    if (!cfg) return res.status(400).json({ success: false, error: '无效关卡' });
+    if (!Array.isArray(messages) || !messages.length) {
+      return res.status(400).json({ success: false, error: '缺少消息内容' });
+    }
+
+    // 历史截断：保留最近 10 条，防 token 膨胀
+    const history = messages.slice(-10).map(m => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: String(m.content || '').slice(0, 500),
+    }));
+
+    const reply = await chat(cfg.systemPrompt, history);
+    const leaked = detectLeak(reply, cfg.secret);
+    res.json({
+      success: true,
+      data: { reply, leaked, secret: leaked ? cfg.secret : undefined },
+    });
+  } catch (err) {
+    console.error('[攻防游戏] move 失败:', err.message);
+    res.status(err.status || 500).json({ success: false, error: err.message || '服务器内部错误' });
+  }
+});
+
+// ==========================================
+// POST /api/prompt-game/result — 攻防游戏成绩入库
+// ==========================================
+router.post('/prompt-game/result', rateLimit, (req, res) => {
+  try {
+    const { levelReached, attempts, city } = req.body;
+    if (!levelReached || parseInt(levelReached) < 1) {
+      return res.status(400).json({ success: false, error: '缺少成绩' });
+    }
+    promptGameRepo.saveResult({
+      levelReached: Math.min(5, parseInt(levelReached)),
+      attempts: parseInt(attempts) || 0,
+      city: city || '',
+    });
+    res.status(201).json({ success: true, message: '成绩已记录' });
+  } catch (err) {
+    console.error('[攻防游戏] 成绩入库失败:', err);
+    res.status(500).json({ success: false, error: '服务器内部错误' });
   }
 });
 
