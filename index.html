@@ -320,18 +320,27 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 900px; margin: 0 auto;
 }
 .instructor-card {
-  display: flex; gap: 24px; padding: 32px; border-radius: 20px;
+  display: flex; flex-direction: column; padding: 0; overflow: hidden;
+  border-radius: 20px;
   background: #ffffff; border: 1px solid #e2e8f0;
   transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 .instructor-card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-4px); }
-.instructor-avatar {
-  width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
+/* 讲师照片区：16:9 大图（真人照片，bayaiu.ai 风格） */
+.instructor-photo {
+  width: 100%; aspect-ratio: 16/9; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  font-size: 2rem; font-weight: 800;
+  background: #eef2f7;
 }
-.instructor-avatar.purple { background: linear-gradient(135deg, #4f46e5, #6366f1); }
-.instructor-avatar.blue { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+.instructor-photo-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.instructor-photo-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3.2rem; font-weight: 800; color: #fff;
+}
+.instructor-photo-placeholder.purple { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+.instructor-photo-placeholder.blue { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+.instructor-info { padding: 24px 28px 28px; }
 .instructor-info h4 { font-size: 1.1rem; margin-bottom: 4px; }
 .instructor-info .role { font-size: 0.85rem; color: #3b82f6; margin-bottom: 10px; }
 .instructor-info .bio { font-size: 0.88rem; color: #64748b; line-height: 1.7; }
@@ -2292,12 +2301,13 @@ const CONTENT_APPLY = {
     const grid = document.getElementById('instructorsGrid');
     if (!grid || !i.cards || !i.cards.length) return;
     grid.innerHTML = i.cards.map((c, idx) => {
-      const av = c.avatarImg
-        ? `<img src="${escAttr(c.avatarImg)}" alt="${esc(c.name)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`
-        : esc(c.avatar || '师');
+      // 大图卡片：有照片显示 16:9 真人照，无照片用渐变首字占位
+      const photo = c.avatarImg
+        ? `<img src="${escAttr(c.avatarImg)}" alt="${esc(c.name)}" class="instructor-photo-img">`
+        : `<div class="instructor-photo-placeholder ${idx % 2 ? 'blue' : 'purple'}">${esc(c.avatar || '师')}</div>`;
       return `
       <div class="instructor-card">
-        <div class="instructor-avatar ${idx % 2 ? 'blue' : 'purple'}">${av}</div>
+        <div class="instructor-photo">${photo}</div>
         <div class="instructor-info">
           <h4>${esc(c.name)}</h4>
           <p class="role">${esc(c.role)}</p>
