@@ -2618,9 +2618,10 @@ function applyContent(content) {
 }
 
 // 页面加载时拉取后台内容，失败静默（降级到硬编码）
+// 带时间戳参数，防止浏览器/代理缓存内容接口导致数据不更新
 async function loadSiteContent() {
   try {
-    const res = await fetch('/api/content');
+    const res = await fetch('/api/content?t=' + Date.now());
     if (!res.ok) return;
     const data = (await res.json()).data;
     if (data) applyContent(data);
