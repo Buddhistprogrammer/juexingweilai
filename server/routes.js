@@ -43,7 +43,7 @@ function rateLimit(req, res, next) {
 }
 
 const validTypes = ['community', 'salon', 'tour', 'visit', 'course', 'enterprise'];
-const validStatuses = ['pending', 'contacted', 'confirmed', 'completed', 'cancelled'];
+const validStatuses = ['pending', 'contacted', 'confirmed', 'completed', 'cancelled', 'rejected'];
 const PHONE_RE = /^1[3-9]\d{9}$/;
 
 // ==========================================

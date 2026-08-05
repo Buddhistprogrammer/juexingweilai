@@ -44,6 +44,7 @@ tr:hover{background:rgba(124,58,237,0.04)}
 .status.confirmed{background:rgba(52,211,153,0.15);color:#34d399}
 .status.completed{background:rgba(34,211,238,0.15);color:#22d3ee}
 .status.cancelled{background:rgba(239,68,68,0.15);color:#f87171}
+.status.rejected{background:rgba(244,63,94,0.15);color:#fb7185}
 
 .type-tag{display:inline-block;padding:3px 10px;border-radius:50px;font-size:0.75rem;font-weight:600}
 .type-tag.salon{background:rgba(124,58,237,0.15);color:#a78bfa}
@@ -181,6 +182,7 @@ select.st{font-size:0.8rem;padding:4px 8px;border-radius:8px;background:rgba(255
     <button class="filter-chip" data-f-status="confirmed" onclick="setFilter('status','confirmed')">已确认</button>
     <button class="filter-chip" data-f-status="completed" onclick="setFilter('status','completed')">已完成</button>
     <button class="filter-chip" data-f-status="cancelled" onclick="setFilter('status','cancelled')">已取消</button>
+    <button class="filter-chip" data-f-status="rejected" onclick="setFilter('status','rejected')">已拒绝</button>
   </div>
 </div>
 
@@ -326,7 +328,7 @@ const CITY_NAMES = {
   beijing:'北京', shanghai:'上海', shenzhen:'深圳', guangzhou:'广州',
   hangzhou:'杭州', chengdu:'成都', wuhan:'武汉', nanjing:'南京'
 };
-const STATUS_NAMES = { pending:'待联系', contacted:'已联系', confirmed:'已确认', completed:'已完成', cancelled:'已取消' };
+const STATUS_NAMES = { pending:'待联系', contacted:'已联系', confirmed:'已确认', completed:'已完成', cancelled:'已取消', rejected:'已拒绝' };
 
 let token, currentPage = 1;
 
@@ -463,6 +465,7 @@ async function loadBookings(page = 1) {
             <option value="confirmed" ${b.status==='confirmed'?'selected':''}>已确认</option>
             <option value="completed" ${b.status==='completed'?'selected':''}>已完成</option>
             <option value="cancelled" ${b.status==='cancelled'?'selected':''}>已取消</option>
+            <option value="rejected" ${b.status==='rejected'?'selected':''}>已拒绝</option>
           </select>
         </td>
       </tr>
