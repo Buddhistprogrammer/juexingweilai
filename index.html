@@ -889,7 +889,7 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
   <div class="container">
     <div class="hero-content">
       <div class="hero-badge">
-        <span class="dot"></span> <span id="badgeText" data-c="hero.badge">来客兄弟AI集团 · 觉醒未来城</span> · <span id="heroCityName">深圳</span>
+        <span class="dot"></span> <span id="badgeText" data-c="hero.badge">来客兄弟AI集团 · 觉醒未来城</span>
       </div>
       <h1 data-c-html="hero.title">要么<span class="highlight">AI化</span>，<br>要么被<span class="highlight">AI化</span></h1>
       <p data-c-html="hero.subtitle">觉醒未来城 — 中国县域AI生态综合服务商。打通"政府+企业+人才+硬件+资本"五端，覆盖全国2800区县，<br>一个AI觉醒未来城，带动一座城全面AI化。</p>
@@ -1739,7 +1739,8 @@ function switchCity(city) {
   // 右上角城市选择器已移除（仅保留 URL/页脚城市切换），此处兼容旧引用
   const sel = document.getElementById('citySelect');
   if (sel) sel.value = city;
-  document.getElementById('heroCityName').textContent = cityNames[city] || city;
+  const hcn = document.getElementById('heroCityName');
+  if (hcn) hcn.textContent = cityNames[city] || city;
   localStorage.setItem('laikedixiong_city', city);
   // 弹窗已打开时同步城市字段
   const cityField = document.querySelector('#dynamicFields [data-key="city"]');
