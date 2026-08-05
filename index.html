@@ -2578,15 +2578,20 @@ const CONTENT_APPLY = {
   pricing(p) {
     const grid = document.getElementById('pricingGrid');
     if (!grid || !p.cards || !p.cards.length) return;
-    grid.innerHTML = p.cards.map(c => `
+    grid.innerHTML = p.cards.map(c => {
+      // features 兼容数组与逗号分隔字符串两种格式
+      const feats = Array.isArray(c.features) ? c.features
+        : (typeof c.features === 'string' ? c.features.split(/[,，]/) : []);
+      return `
       <div class="pricing-card${c.featured ? ' featured' : ''}">
         ${c.badge ? `<div class="badge">${esc(c.badge)}</div>` : ''}
         <h4>${esc(c.name)}</h4>
         <div class="price" style="${c.priceStyle || ''}">${esc(c.price)}</div>
         <div class="price-period">${esc(c.period)}</div>
-        <ul class="features">${(c.features || []).map(f => `<li>${esc(f)}</li>`).join('')}</ul>
+        <ul class="features">${feats.filter(Boolean).map(f => `<li>${esc(f)}</li>`).join('')}</ul>
         <button class="btn ${c.featured ? 'btn-primary' : 'btn-outline'}" style="width:100%" onclick="${contentBtnOnclick(c.btnType)}">${esc(c.btnText)}</button>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   },
   faq(f) {
     const list = document.getElementById('faqList');
