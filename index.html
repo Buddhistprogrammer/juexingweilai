@@ -602,6 +602,7 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
   box-shadow: 0 12px 40px rgba(79,70,229,0.25);
 }
 .poster-box img { width: 100%; display: block; }
+.poster-guide { color: #94a3b8; font-size: 0.88rem; margin: 14px auto 6px; max-width: 420px; line-height: 1.7; }
 
 /* ========== Form Options ========== */
 .opt-group { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -1127,9 +1128,10 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
         <h3 id="resultTitle"></h3>
         <p class="result-desc" id="resultDesc"></p>
         <div class="poster-box"><img id="posterImg" alt="我的含AI量分享海报"></div>
+        <p class="poster-guide">💡 长按上方海报 → 保存到相册 → 发朋友圈，让好友也来测测！</p>
         <div class="share-btns">
-          <button class="btn btn-primary" onclick="shareResult()">分享我的含AI量</button>
-          <a class="btn btn-outline" id="downloadPoster" download="我的含AI量.png" style="text-decoration:none">保存海报</a>
+          <a class="btn btn-primary" id="downloadPoster" download="我的含AI量.png" style="text-decoration:none">📤 保存海报发朋友圈</a>
+          <button class="btn btn-outline" onclick="shareResult()">分享给好友</button>
           <button class="btn btn-outline" onclick="resetQuiz()">重新测试</button>
         </div>
       </div>
