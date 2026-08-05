@@ -112,6 +112,22 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
 .hero-stat h3 { font-size: 2rem; font-weight: 800; color: #3b82f6; }
 .hero-stat p { font-size: 0.85rem; color: #94a3b8; margin: 0; }
 
+/* ========== Cloud Tour（720云云参观链接） ========== */
+.cloud-tour { text-align: center; padding: 10px 0 0; }
+.cloud-tour a {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 1.15rem; font-weight: 700;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding: 12px 28px; border-radius: 50px;
+  border: 2px solid rgba(99,102,241,0.35);
+  transition: all 0.3s;
+}
+.cloud-tour a:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79,70,229,0.15); }
+.cloud-tour a .arrow { transition: transform 0.3s; }
+.cloud-tour a:hover .arrow { transform: translateX(4px); }
+
 /* ========== Intro（左文右图品牌介绍） ========== */
 .intro { padding: 100px 0; }
 .intro-grid {
@@ -780,6 +796,11 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
     </div>
   </div>
 </section>
+
+<!-- ===== CLOUD TOUR: 720云云参观 ===== -->
+<div class="cloud-tour">
+  <a href="https://www.720yun.com/t/3dakuyrbOpl?scene_id=129763395" target="_blank" rel="noopener">AI觉醒未来城云参观 <span class="arrow">→</span></a>
+</div>
 
 <!-- ===== PAIN POINTS: 三缺一散 ===== -->
 <section class="pain-points" id="pain-points">
