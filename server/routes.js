@@ -57,7 +57,7 @@ const upload = multer({
       cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
     },
   }),
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 20 * 1024 * 1024 }, // 单文件 ≤ 20MB（手机原图/高清图均可用）
   fileFilter: (req, file, cb) => {
     const ok = ['.png', '.jpg', '.jpeg', '.gif', '.webp'].includes(path.extname(file.originalname).toLowerCase());
     cb(ok ? null : new Error('仅支持 png/jpg/jpeg/gif/webp 图片格式'), ok);
