@@ -1532,6 +1532,11 @@ function openModal(type) {
 
 function closeModal(e) {
   if (e && e.target !== document.getElementById('modalOverlay')) return;
+  // 关闭自动弹出的展厅弹窗后，标记不再自动弹出（用户主动打开的弹窗不受影响）
+  if (autoPopupActive) {
+    localStorage.setItem('visit_popup_dismissed', '1');
+    autoPopupActive = false;
+  }
   document.getElementById('modalOverlay').classList.remove('active');
   document.body.style.overflow = '';
 }
@@ -2444,8 +2449,11 @@ loadSiteContent();
 initQuiz();
 initAttackGame();
 
-// 自动弹出「预约参观展厅」引导弹窗（2 秒后弹出，可点 ✕ / 遮罩 / ESC 关闭）
-setTimeout(() => openModal('visit'), 2000);
+// 自动弹出「预约参观展厅」引导弹窗（2 秒后弹出，可点 ✕ / 遮罩 / ESC 关闭；关闭后不再自动弹出）
+let autoPopupActive = false;
+if (!localStorage.getItem('visit_popup_dismissed')) {
+  setTimeout(() => { autoPopupActive = true; openModal('visit'); }, 2000);
+}
 
 // ESC 关闭弹窗
 document.addEventListener('keydown', e => {
