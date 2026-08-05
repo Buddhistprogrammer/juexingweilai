@@ -705,7 +705,7 @@ function fieldInputHtml(f, val) {
   if (f.type === 'image') {
     return `<div class="cf-imgrow">
         <input class="cf-input" data-fkey="${f.key}" value="${escAttr(val ?? '')}" placeholder="图片 URL 或上传">
-        <input type="file" accept="image/*" class="cf-file">
+        <input type="file" accept="image/*" class="cf-file" onchange="uploadImg(this)">
         <button class="refresh-btn" onclick="uploadImg(this)">上传图片</button>
         <img class="cf-preview" src="${escAttr(val ?? '')}" onerror="this.style.display='none'">
       </div>`;
@@ -739,7 +739,7 @@ function listRowHtml(f, item) {
     } else if (sf.type === 'image') {
       input = `<div class="cf-imgrow">
           <input class="cf-input" data-sfkey="${sf.key}" value="${escAttr(item[sf.key] ?? '')}" placeholder="图片 URL 或上传">
-          <input type="file" accept="image/*" class="cf-file">
+          <input type="file" accept="image/*" class="cf-file" onchange="uploadImg(this)">
           <button class="refresh-btn" onclick="uploadImg(this)">上传</button>
           <img class="cf-preview" src="${escAttr(item[sf.key] ?? '')}" onerror="this.style.display='none'">
         </div>`;

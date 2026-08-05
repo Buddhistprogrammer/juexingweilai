@@ -2321,8 +2321,9 @@ const CONTENT_APPLY = {
     if (!gal || !sh.items || !sh.items.length) return;
     gal.innerHTML = sh.items.map(it => {
       const large = it.large ? ' large' : '';
+      // 图片完整显示（object-fit:contain 不裁切不变形，适配任意上传尺寸）
       const media = it.img
-        ? `<img src="${escAttr(it.img)}" alt="${esc(it.title)}" style="width:100%;height:100%;object-fit:cover">`
+        ? `<img src="${escAttr(it.img)}" alt="${esc(it.title)}" style="width:100%;height:100%;object-fit:contain;background:#f8fafc;padding:8px">`
         : `<span style="font-size:2rem;">${esc(it.icon)}</span>`;
       return `
       <div class="showroom-item${large}" style="font-size:1rem;padding:20px;flex-direction:column;gap:8px;overflow:hidden">
