@@ -10,8 +10,9 @@
  */
 const { logToConsole, logToFile } = require('./channels/console');
 const { sendWebhook } = require('./channels/webhook');
-const { sendWecomBot } = require('./channels/wecom');
+const { sendWecomBot, sendWecomTitle } = require('./channels/wecom');
 const { sendEmail } = require('./channels/email');
+const { sendPushPlus, sendPushPlusBooking } = require('./channels/pushplus');
 const { recordNotify } = require('../data/notify.repo');
 
 async function notify(booking) {
@@ -23,10 +24,11 @@ async function notify(booking) {
     sendWebhook(booking),
     sendWecomBot(booking),
     sendEmail(booking),
+    sendPushPlusBooking(booking),
   ]);
 
   // 记录通知日志到数据库
-  const channels = ['webhook', 'wecom', 'email'];
+  const channels = ['webhook', 'wecom', 'email', 'pushplus'];
   results.forEach((r, i) => {
     if (r.status === 'fulfilled' && r.value && !r.value.skipped) {
       const result = r.value;
@@ -45,4 +47,19 @@ async function notify(booking) {
   return summary;
 }
 
-module.exports = { notify };
+// 通用推送（订单等非预约场景）：企业微信 + PushPlus
+async function push(title, content) {
+  const results = await Promise.allSettled([
+    sendWecomTitle(title, content),
+    sendPushPlus(title, content),
+  ]);
+  const summary = results.map((r, i) => {
+    if (r.status === 'rejected') return `${['wecom', 'pushplus'][i]}: 异常`;
+    if (r.value?.skipped) return null;
+    return `${r.value.channel}: ${r.value.success ? '✓' : '✗'}`;
+  }).filter(Boolean);
+  console.log(`[推送] ${title}: ${summary.join(', ') || '无启用渠道'}`);
+  return summary;
+}
+
+module.exports = { notify, push };

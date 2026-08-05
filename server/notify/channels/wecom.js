@@ -4,27 +4,14 @@
  */
 const { TYPE_NAMES, CITY_NAMES } = require('../formatter');
 
-async function sendWecomBot(booking) {
+// 通用企业微信 markdown 消息（预约/订单通用）
+async function sendWecomMarkdown(markdownContent) {
   const url = process.env.WECOM_WEBHOOK;
   if (!url) return { skipped: true, reason: 'WECOM_WEBHOOK 未配置' };
 
-  const typeName = TYPE_NAMES[booking.type];
-  const cityName = CITY_NAMES[booking.city] || booking.city;
-
   const payload = {
     msgtype: 'markdown',
-    markdown: {
-      content: [
-        `## 📩 新预约通知`,
-        `> 类型：<font color="info">${typeName}</font>`,
-        `> 姓名：${booking.name}`,
-        `> 手机：${booking.phone}`,
-        `> 城市：${cityName}`,
-        `> 公司：${booking.company || '未填写'}`,
-        `> 备注：${booking.note || '无'}`,
-        `> 时间：${booking.created_at}`,
-      ].join('\n'),
-    },
+    markdown: { content: markdownContent },
   };
 
   try {
@@ -42,4 +29,25 @@ async function sendWecomBot(booking) {
   }
 }
 
-module.exports = { sendWecomBot };
+// 标题 + 正文（通用推送场景：订单等）
+function sendWecomTitle(title, content) {
+  return sendWecomMarkdown(`## ${title}\n${content}`);
+}
+
+// 预约通知（保持原签名，供 notify() 统一调度）
+function sendWecomBot(booking) {
+  const typeName = TYPE_NAMES[booking.type];
+  const cityName = CITY_NAMES[booking.city] || booking.city;
+  return sendWecomMarkdown([
+    `## 📩 新预约通知`,
+    `> 类型：<font color="info">${typeName}</font>`,
+    `> 姓名：${booking.name}`,
+    `> 手机：${booking.phone}`,
+    `> 城市：${cityName}`,
+    `> 公司：${booking.company || '未填写'}`,
+    `> 备注：${booking.note || '无'}`,
+    `> 时间：${booking.created_at}`,
+  ].join('\n'));
+}
+
+module.exports = { sendWecomBot, sendWecomTitle };

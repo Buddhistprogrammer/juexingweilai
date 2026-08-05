@@ -9,6 +9,7 @@ const orderRepo = require('../data/order.repo');
 const bookingService = require('./booking.service');
 const products = require('../payment/products');
 const payment = require('../payment');
+const { push } = require('../notify');
 
 const LOG_DIR = path.join(__dirname, '..', 'logs');
 if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true });
@@ -58,6 +59,14 @@ async function createOrder({ product, name, phone, city, source }) {
   });
 
   logOrder(`新订单 ${orderNo} | ${p.title} | ¥${(p.amount / 100).toFixed(2)} | ${name} ${phone} | 渠道=${payInfo.channel} | 预约#${booking.id}`);
+  // 微信推送提醒（企微 + PushPlus），不阻塞响应
+  push('💰 新订单', [
+    `**商品**：${p.title}`,
+    `**金额**：¥${(p.amount / 100).toFixed(2)}`,
+    `**客户**：${name} ${phone}`,
+    `**订单号**：${orderNo}`,
+    `**方式**：${payInfo.channel === 'wechat' ? '微信扫码' : '收款码（待确认）'}`,
+  ].join('\n')).catch(e => console.error('[推送异常]', e.message));
   return { ...order, channel: payInfo.channel, qrCodeUrl };
 }
 
@@ -81,6 +90,12 @@ function confirmPaid(id, transactionId) {
   if (order.status === 'paid') return order;
   orderRepo.markPaid(id, transactionId);
   logOrder(`订单已确认收款 #${id} ${order.order_no} | ${order.title} | ¥${(order.amount / 100).toFixed(2)}`);
+  push('✅ 订单已支付', [
+    `**商品**：${order.title}`,
+    `**金额**：¥${(order.amount / 100).toFixed(2)}`,
+    `**订单号**：${order.order_no}`,
+    `**确认方式**：后台人工确认`,
+  ].join('\n')).catch(e => console.error('[推送异常]', e.message));
   return orderRepo.getById(id);
 }
 
@@ -90,6 +105,12 @@ function markPaidByOrderNo(orderNo, transactionId) {
   if (!order) return null;
   orderRepo.markPaid(order.id, transactionId);
   logOrder(`微信支付成功 ${orderNo} | ${order.title} | ¥${(order.amount / 100).toFixed(2)} | 交易号 ${transactionId}`);
+  push('✅ 微信支付成功', [
+    `**商品**：${order.title}`,
+    `**金额**：¥${(order.amount / 100).toFixed(2)}`,
+    `**订单号**：${order.order_no}`,
+    `**交易号**：${transactionId}`,
+  ].join('\n')).catch(e => console.error('[推送异常]', e.message));
   return orderRepo.getById(order.id);
 }
 
