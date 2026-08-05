@@ -1948,6 +1948,14 @@ function closePayModal() {
   document.body.style.overflow = '';
 }
 
+// 微信内置浏览器中 <a download> 无法下载，引导长按海报保存
+document.getElementById('downloadPoster').addEventListener('click', function (e) {
+  if (/MicroMessenger/i.test(navigator.userAgent)) {
+    e.preventDefault();
+    alert('微信中请长按上方海报图片 → 保存到相册，再去朋友圈发布');
+  }
+});
+
 async function submitQuickForm(e) {
   e.preventDefault();
   const inputs = e.target.querySelectorAll('input');
@@ -2290,17 +2298,47 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
 
 function resetQuiz() { initQuiz(); }
 
+// 兼容性复制：Clipboard API → execCommand 兜底（微信内置浏览器/http 环境可用）
+function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).then(() => true).catch(() => fallbackCopy(text));
+  }
+  return Promise.resolve(fallbackCopy(text));
+}
+function fallbackCopy(text) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) { return false; }
+}
+
 function shareResult() {
   const pct = document.getElementById('scoreVal').textContent;
   const title = document.getElementById('resultTitle').textContent;
-  const text = `我的含AI量是${pct}分——${title}！你也来测测：要么AI化，要么被AI化！`;
+  const text = `我的含AI量是${pct}分——${title}！你也来测测：要么AI化，要么被AI化！ ${window.location.href}`;
+  // 微信内置浏览器/ http 环境不支持 navigator.share，直接走复制 + 右上角菜单引导
   if (navigator.share) {
-    navigator.share({ title: '觉醒未来城 · 含AI量检测', text: text, url: window.location.href });
+    navigator.share({ title: '觉醒未来城 · 含AI量检测', text: text, url: window.location.href })
+      .catch(() => copyAndHint(text));
   } else {
-    navigator.clipboard.writeText(text + ' ' + window.location.href).then(() => {
-      alert('已复制分享文案，快去分享给朋友吧！');
-    });
+    copyAndHint(text);
   }
+}
+
+function copyAndHint(text) {
+  copyText(text).then(ok => {
+    if (ok) {
+      alert('✅ 分享文案已复制！\n\n粘贴发送给好友，或点右上角「···」→ 分享给朋友');
+    } else {
+      alert('复制失败，请点右上角「···」→ 分享给朋友，或长按海报发朋友圈');
+    }
+  });
 }
 
 /* ========== AI 攻防擂台（提示词攻防小游戏） ========== */
