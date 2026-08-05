@@ -132,7 +132,7 @@ module.exports = {
         btnText: '免费加入 →', btnType: 'community', featured: false, badge: '',
       },
       {
-        name: '📚 AI普及线上课', price: '¥299', period: '原价 ¥599', priceStyle: '',
+        name: '📚 AI普及线上课', price: '¥1', period: '原价 ¥299', priceStyle: '',
         features: ['8节系统AI课程（录播+直播）', '实体门店AI化全流程', '每周在线答疑直播', '专属学员交流群', '结业证书+AI工具包', '优先参加线下沙龙+游学'],
         btnText: '立即报名', btnType: 'course', featured: true, badge: '🔥 最受欢迎',
       },

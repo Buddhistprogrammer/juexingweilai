@@ -6,7 +6,7 @@
 module.exports = {
   course: {
     title: 'AI普及线上课',
-    amount: 29900, // ¥299.00
+    amount: 100, // ¥1.00（1元引流价）
   },
   // 后续新增可支付商品在此追加，如：
   // tour: { title: 'AI游学', amount: 19900 },
