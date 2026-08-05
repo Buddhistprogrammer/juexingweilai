@@ -8,7 +8,9 @@
 <style>
 /* ========== Reset & Base ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+* { -webkit-tap-highlight-color: transparent; }
 html { scroll-behavior: smooth; font-size: 16px; }
+a, button, select, input, textarea { touch-action: manipulation; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   background: linear-gradient(180deg, #eef6ff 0%, #f5f0ff 50%, #f0f8ff 100%); background-attachment: fixed; color: #1e293b; line-height: 1.7;
@@ -710,10 +712,11 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
 
 /* ========== Responsive ========== */
 @media (max-width: 960px) {
-  .hero h1 { font-size: 2.5rem; }
+  .hero h1 { font-size: 2.2rem; }
+  .section-title { font-size: 2rem; }
   .modules-grid { grid-template-columns: repeat(2, 1fr); }
-  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
-  .instructors-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+  .instructors-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .showroom-gallery { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .timeline::before { left: 24px; }
@@ -728,22 +731,133 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
   .intro-grid { grid-template-columns: 1fr; gap: 40px; }
 }
 @media (max-width: 640px) {
-  .hero h1 { font-size: 2rem; }
-  .hero-stats { flex-direction: column; gap: 24px; }
-  .modules-grid { grid-template-columns: 1fr; }
+  .container { padding: 0 16px; }
+
+  /* 通用 */
+  .section-title { font-size: 1.6rem; }
+  .section-subtitle { font-size: 1rem; }
+  .section-tag { font-size: 0.75rem; padding: 5px 12px; }
+  .btn { min-height: 46px; }
+
+  /* Section 间距统一收紧 */
+  .hero, .ai-test, .modules, .syllabus, .instructors, .why,
+  .showroom, .pricing, .faq, .centers, .intro, .pain-points { padding: 64px 0; }
+
+  /* Nav */
+  .nav { padding: 12px 0; }
+  .nav-logo { font-size: 1.15rem; }
   .nav-links { display: none; }
-  .nav-mobile-toggle { display: block; }
-  .instructor-card { flex-direction: column; align-items: center; text-align: center; }
-  .showroom-gallery { grid-template-columns: 1fr 1fr; }
-  .showroom-item.large { grid-column: span 1; grid-row: span 1; }
-  .footer-grid { grid-template-columns: 1fr; }
+  .nav-links a { padding: 13px 0; font-size: 1rem; font-weight: 600; }
+  .nav-mobile-toggle { display: block; font-size: 1.5rem; }
+  #navActions .btn { min-height: 38px; padding: 8px 14px; font-size: 0.85rem; }
+
+  /* Hero */
+  .hero h1 { font-size: 1.85rem; }
+  .hero-badge { font-size: 0.76rem; padding: 6px 14px; }
+  .hero p { font-size: 1.02rem; }
   .hero-ctas { flex-direction: column; }
-  .hero-ctas .btn { text-align: center; justify-content: center; }
-  .cta-banner-inner { padding: 40px 20px; }
-  .why-grid { grid-template-columns: 1fr; }
-  .diff-grid { grid-template-columns: 1fr; }
-  .centers-grid { grid-template-columns: 1fr; }
-  .float-consult { right: 16px; bottom: 16px; padding: 12px 18px; font-size: 0.9rem; }
+  .hero-ctas .btn { width: 100%; justify-content: center; }
+  .hero-stats { flex-wrap: wrap; gap: 22px 0; margin-top: 44px; }
+  .hero-stat { flex: 1 1 45%; }
+  .hero-stat h3 { font-size: 1.5rem; }
+  .hero-stat p { font-size: 0.78rem; }
+
+  /* 品牌介绍 */
+  .intro-grid { gap: 28px; }
+  .intro-feats li { font-size: 0.93rem; padding: 9px 0; }
+  .intro-img-placeholder { aspect-ratio: 4/3; }
+
+  /* 链接行 */
+  .cloud-tour a { font-size: 1rem; padding: 10px 20px; }
+
+  /* 卡片统一单列 */
+  .modules-grid, .centers-grid, .why-grid, .diff-grid { grid-template-columns: 1fr; }
+  .module-card { padding: 26px 22px; }
+  .module-card h3 { font-size: 1.1rem; }
+  .center-card { padding: 28px 22px; }
+  .diff-card { padding: 24px 18px; }
+  .diff-card h4 { font-size: 1rem; }
+
+  /* 痛点 */
+  .pp-grid { gap: 24px; }
+  .pp-item { padding: 13px 0; }
+  .pp-solve { font-size: 0.98rem; padding: 16px 14px; }
+
+  /* 时间线 */
+  .timeline-content { padding: 20px 18px; }
+  .timeline-content h4 { font-size: 1rem; }
+  .timeline-content p { font-size: 0.86rem; }
+
+  /* 讲师大图卡片 */
+  .instructors-grid { grid-template-columns: 1fr; }
+  .instructor-info { padding: 20px 20px 24px; }
+  .instructor-info .bio { font-size: 0.86rem; }
+
+  /* 展厅 */
+  .showroom-gallery { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .showroom-item { padding: 12px 8px !important; }
+  .showroom-item strong { font-size: 0.82rem !important; }
+  .showroom-item p { display: none; }
+  .showroom-item.large { grid-column: span 1; grid-row: span 1; }
+
+  /* 含AI量检测 */
+  .ai-test-card { padding: 28px 16px; }
+  .ai-test-card h2 { font-size: 1.5rem; }
+  .type-card { min-width: 100%; padding: 26px 20px; }
+  .ai-quiz .q-option { padding: 14px 16px; font-size: 0.95rem; }
+  .ai-quiz .q-title { font-size: 1.05rem; }
+  .score-circle { width: 140px; height: 140px; }
+  .poster-box { max-width: 250px; }
+  .poster-guide { font-size: 0.8rem; }
+  .share-btns { flex-direction: column; }
+  .share-btns .btn { width: 100%; justify-content: center; }
+
+  /* 攻防擂台 */
+  .attack-chat { max-height: 300px; padding: 12px; }
+  .attack-msg-body { font-size: 0.88rem; }
+  .attack-level { padding: 6px 10px; font-size: 0.75rem; gap: 6px; }
+  .attack-level .al-num { width: 20px; height: 20px; font-size: 0.7rem; }
+  .attack-input { flex-direction: column; }
+  .attack-input .btn { width: 100%; }
+
+  /* 价格 */
+  .pricing-grid { max-width: 100%; }
+  .pricing-card { padding: 32px 22px; }
+  .pricing-card .features li { font-size: 0.88rem; }
+
+  /* FAQ */
+  .faq-q { font-size: 0.98rem; padding: 20px 0; }
+  .faq-a { font-size: 0.9rem; }
+
+  /* CTA */
+  .cta-banner-inner { padding: 36px 18px; }
+  .cta-banner h2 { font-size: 1.5rem; }
+  .cta-banner p { font-size: 1rem; }
+  #quickForm input { min-width: 100% !important; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .footer { padding: 44px 0 20px; }
+
+  /* 弹窗 */
+  .modal { padding: 24px 18px; width: 94%; max-height: 90vh; }
+  .modal h3 { font-size: 1.25rem; }
+  .form-group input, .form-group select, .form-group textarea { padding: 13px 14px; font-size: 0.95rem; }
+  .opt-item { padding: 10px 15px; font-size: 0.88rem; }
+  .form-success { padding: 30px 10px; }
+
+  /* 支付 */
+  .pay-qrcode { width: 200px; height: 200px; }
+  .pay-tip { font-size: 0.85rem; }
+
+  /* PPT 查看器 */
+  .ppt-viewer { width: 96vw; padding: 20px 12px; }
+  .ppt-stage { min-height: 42vh; max-height: 55vh; }
+  .ppt-btn { padding: 8px 16px; font-size: 0.82rem; }
+  .ppt-info { font-size: 0.8rem; min-width: 64px; }
+
+  /* 悬浮咨询 */
+  .float-consult { right: 14px; bottom: 14px; padding: 12px 16px; font-size: 0.88rem; }
 }
 </style>
 </head>
