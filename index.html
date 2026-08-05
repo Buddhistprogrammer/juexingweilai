@@ -2914,17 +2914,18 @@ async function loadSiteContent() {
 
 /* ========== 数字滚动动画（Hero 统计） ========== */
 // 将 2800+ / 10万㎡ 这类文本拆分为数字+后缀，从 0 缓动递增到目标值
-// 防重入：每个元素只保留一个动画循环，重复触发时先取消旧循环，避免竞争导致卡在中间值
+// 稳健策略：防重入（cancel 旧循环）+ 完成标记（跑完不再重播，重建 DOM 后新元素自动重置）
 function animateStats() {
   const items = document.querySelectorAll('#heroStats .hero-stat h3');
   items.forEach(el => {
+    if (el._animDone) return;            // 已完成，跳过
     if (el._animRaf) cancelAnimationFrame(el._animRaf);
     const m = (el.textContent || '').match(/^([\d.]+)(.*)$/);
-    if (!m) return;
+    if (!m) { el._animDone = true; return; }
     const target = parseFloat(m[1]);
     const suffix = m[2];
-    if (isNaN(target)) return;
-    const duration = 1800;
+    if (isNaN(target)) { el._animDone = true; return; }
+    const duration = 1400;
     const start = performance.now();
     function tick(now) {
       const p = Math.min((now - start) / duration, 1);
@@ -2935,6 +2936,7 @@ function animateStats() {
         el._animRaf = requestAnimationFrame(tick);
       } else {
         el._animRaf = null;
+        el._animDone = true;             // 动画完成，最终值已写入
       }
     }
     el._animRaf = requestAnimationFrame(tick);
