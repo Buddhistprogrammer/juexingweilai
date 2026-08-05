@@ -2444,6 +2444,9 @@ loadSiteContent();
 initQuiz();
 initAttackGame();
 
+// 自动弹出「预约参观展厅」引导弹窗（2 秒后弹出，可点 ✕ / 遮罩 / ESC 关闭）
+setTimeout(() => openModal('visit'), 2000);
+
 // ESC 关闭弹窗
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeModal(); closeConsult(); closePayModal(); }
