@@ -2754,6 +2754,7 @@ const CONTENT_APPLY = {
     if (h.stats && h.stats.length) {
       document.getElementById('heroStats').innerHTML = h.stats.map(s =>
         `<div class="hero-stat"><h3>${esc(s.value)}</h3><p>${esc(s.label)}</p></div>`).join('');
+      animateStats(); // CMS 数据渲染后重新播放数字动画
     }
   },
   painPoints(p) {
@@ -2911,6 +2912,29 @@ async function loadSiteContent() {
   } catch (e) { console.error('[内容加载异常]', e); }
 }
 
+/* ========== 数字滚动动画（Hero 统计） ========== */
+// 将 2800+ / 10万㎡ 这类文本拆分为数字+后缀，从 0 缓动递增到目标值
+function animateStats() {
+  const items = document.querySelectorAll('#heroStats .hero-stat h3');
+  items.forEach(el => {
+    const m = (el.textContent || '').match(/^([\d.]+)(.*)$/);
+    if (!m) return;
+    const target = parseFloat(m[1]);
+    const suffix = m[2];
+    if (isNaN(target)) return;
+    const duration = 1800;
+    const start = performance.now();
+    function tick(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic：先快后慢
+      const val = Math.round(target * eased);
+      el.textContent = val + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
 /* ========== 城市落地页（P4） ========== */
 let cityConfig = null;
 
@@ -2976,6 +3000,9 @@ loadSiteContent();
 initQuiz();
 initAttackGame();
 updateNavAuth();
+
+// Hero 数字动画（首屏直接播放；CMS 数据异步加载后由 applyHero 再次触发）
+setTimeout(animateStats, 500);
 
 // 自动弹出「预约参观展厅」引导弹窗（2 秒后弹出，需已登录 + 未被 dismiss）
 let autoPopupActive = false;
