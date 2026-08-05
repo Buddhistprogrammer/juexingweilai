@@ -5,10 +5,11 @@
 const { getOne, getAll, run } = require('./connection');
 
 function createBooking(data) {
-  const sql = `INSERT INTO bookings (type, name, phone, city, company, note, extra, source, utm_city, status)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO bookings (type, name, phone, city, company, note, extra, source, utm_city, status, user_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   const params = [data.type, data.name, data.phone, data.city || '', data.company || '',
-     data.note || '', data.extra || null, data.source || 'web', data.utm_city || '', 'pending'];
+     data.note || '', data.extra || null, data.source || 'web', data.utm_city || '', 'pending',
+     data.userId || null];
 
   run(sql, params);
 

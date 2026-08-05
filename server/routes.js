@@ -17,6 +17,9 @@ const gameLevels = require('./promptgame/levels');
 const { chat, detectLeak, isConfigured: llmConfigured, isMock: llmMock } = require('./promptgame/llm');
 const promptGameRepo = require('./data/promptGame.repo');
 const cityConfig = require('./city.config');
+const userService = require('./services/user.service');
+const userRepo = require('./data/user.repo');
+const { requireLogin, optionalLogin } = require('./auth/middleware');
 
 // 提示词攻防游戏限流：每 IP 每分钟 5 次（内存实现，防刷 LLM API 烧钱）
 const rateMap = new Map(); // ip -> [timestamps]
@@ -75,9 +78,60 @@ function requireAuth(req, res) {
 }
 
 // ==========================================
-// POST /api/bookings — 创建预约
+// POST /api/auth/register — 注册
 // ==========================================
-router.post('/bookings', async (req, res) => {
+router.post('/auth/register', (req, res) => {
+  try {
+    const { phone, name, password } = req.body;
+    if (!phone || !name || !password) {
+      return res.status(400).json({ success: false, error: '手机号、姓名、密码均为必填' });
+    }
+    if (!PHONE_RE.test(phone)) {
+      return res.status(400).json({ success: false, error: '手机号格式不正确' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ success: false, error: '密码至少6位' });
+    }
+    const result = userService.register({ phone, name, password });
+    res.status(201).json({ success: true, data: result, message: '注册成功' });
+  } catch (err) {
+    const status = err.status || 500;
+    res.status(status).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// POST /api/auth/login — 登录
+// ==========================================
+router.post('/auth/login', (req, res) => {
+  try {
+    const { phone, password } = req.body;
+    if (!phone || !password) {
+      return res.status(400).json({ success: false, error: '手机号和密码为必填' });
+    }
+    const result = userService.login({ phone, password });
+    res.json({ success: true, data: result, message: '登录成功' });
+  } catch (err) {
+    const status = err.status || 500;
+    res.status(status).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// GET /api/auth/me — 获取当前用户信息
+// ==========================================
+router.get('/auth/me', requireLogin, (req, res) => {
+  const user = userRepo.findById(req.user.id);
+  if (!user) {
+    return res.status(404).json({ success: false, error: '用户不存在' });
+  }
+  res.json({ success: true, data: user });
+});
+
+// ==========================================
+// POST /api/bookings — 创建预约（需登录）
+// ==========================================
+router.post('/bookings', requireLogin, async (req, res) => {
   try {
     const { type, name, phone, city, company, note, source, utm_city, extra } = req.body;
 
@@ -99,6 +153,7 @@ router.post('/bookings', async (req, res) => {
     const booking = bookingService.createBooking({
       type, name, phone, city: city || '', company, note,
       source: source || 'web', utm_city: utm_city || '', extra,
+      userId: req.user.id,
     });
 
     res.status(201).json({
@@ -271,9 +326,9 @@ router.post('/upload', (req, res) => {
 });
 
 // ==========================================
-// POST /api/orders — 创建课程订单（报名 + 支付）
+// POST /api/orders — 创建课程订单（需登录）
 // ==========================================
-router.post('/orders', async (req, res) => {
+router.post('/orders', requireLogin, async (req, res) => {
   try {
     const { product, name, phone, city, source } = req.body;
     if (!product || !name || !phone) {
@@ -432,6 +487,47 @@ router.post('/prompt-game/result', rateLimit, (req, res) => {
     console.error('[攻防游戏] 成绩入库失败:', err);
     res.status(500).json({ success: false, error: '服务器内部错误' });
   }
+});
+
+// ==========================================
+// GET /api/admin/pay-qrcode — 查看当前收款码信息
+// ==========================================
+router.get('/admin/pay-qrcode', (req, res) => {
+  try {
+    if (!requireAuth(req, res)) return;
+    const qrPath = path.join(UPLOAD_DIR, 'pay-qrcode.png');
+    const exists = fs.existsSync(qrPath);
+    res.json({
+      success: true,
+      data: {
+        exists,
+        url: exists ? '/uploads/pay-qrcode.png' : null,
+        updatedAt: exists ? fs.statSync(qrPath).mtime.toISOString() : null,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: '服务器内部错误' });
+  }
+});
+
+// ==========================================
+// POST /api/admin/pay-qrcode — 上传/替换收款二维码
+// ==========================================
+router.post('/admin/pay-qrcode', (req, res) => {
+  if (!requireAuth(req, res)) return;
+  upload.single('file')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ success: false, error: err.message || '上传失败' });
+    }
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: '未选择文件' });
+    }
+    // 覆盖写入 pay-qrcode.png（先删除旧文件，再重命名新文件）
+    const qrPath = path.join(UPLOAD_DIR, 'pay-qrcode.png');
+    if (fs.existsSync(qrPath)) fs.unlinkSync(qrPath);
+    fs.renameSync(req.file.path, qrPath);
+    res.json({ success: true, url: '/uploads/pay-qrcode.png', message: '收款码已更新' });
+  });
 });
 
 // ==========================================

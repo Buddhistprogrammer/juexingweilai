@@ -524,6 +524,18 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
 .form-success .check { font-size: 3rem; margin-bottom: 16px; }
 .form-success h4 { font-size: 1.3rem; margin-bottom: 8px; }
 
+/* ========== Auth Modal ========== */
+.auth-tabs { display: flex; gap: 0; margin-bottom: 24px; border-radius: 12px; overflow: hidden; border: 1px solid #cbd5e1; }
+.auth-tab { flex: 1; padding: 12px; font-size: 0.95rem; font-weight: 600; background: #f1f5f9; color: #64748b; transition: all 0.2s; }
+.auth-tab.active { background: #2563eb; color: #fff; }
+.auth-modal { max-width: 420px; }
+
+/* 导航栏用户区域 */
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.nav-user { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #64748b; }
+.nav-user .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #2563eb); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
+.btn-sm { padding: 8px 20px; font-size: 0.85rem; border-radius: 50px; }
+
 /* ========== Why ========== */
 .why {
   padding: 100px 0; background: #f6f9fc;
@@ -711,6 +723,9 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
       <a href="#ai-test">含AI量检测</a>
       <a href="#ai-attack">AI攻防</a>
       <a href="#pricing">价格</a>
+    </div>
+    <div class="nav-actions" id="navActions">
+      <button class="btn btn-sm btn-primary" onclick="openAuthModal()">登录 / 注册</button>
     </div>
     <button class="nav-mobile-toggle" onclick="toggleMobileNav()">☰</button>
   </div>
@@ -1361,10 +1376,124 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
   </div>
 </div>
 
+<!-- ===== AUTH MODAL (登录/注册) ===== -->
+<div class="modal-overlay" id="authOverlay" onclick="closeAuthModal(event)">
+  <div class="modal auth-modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">登录</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">注册</button>
+    </div>
+    <div id="authLogin">
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group"><label>手机号 *</label><input type="tel" id="loginPhone" placeholder="请输入手机号" required></div>
+        <div class="form-group"><label>密码 *</label><input type="password" id="loginPwd" placeholder="请输入密码" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">登录</button>
+      </form>
+    </div>
+    <div id="authRegister" style="display:none">
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group"><label>姓名 *</label><input type="text" id="regName" placeholder="请输入姓名" required></div>
+        <div class="form-group"><label>手机号 *</label><input type="tel" id="regPhone" placeholder="请输入手机号" required></div>
+        <div class="form-group"><label>密码 *</label><input type="password" id="regPwd" placeholder="至少6位" minlength="6" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">注册</button>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ========== API + LocalStorage 双模式 ========== */
 const API_BASE = '/api';
 const LOCAL_KEY = 'laikedixiong_data';
+
+/* ========== Auth 用户认证 ========== */
+const AUTH_TOKEN_KEY = 'awakening_auth_token';
+const AUTH_USER_KEY = 'awakening_auth_user';
+
+function getAuthToken() { return localStorage.getItem(AUTH_TOKEN_KEY); }
+function getAuthUser() {
+  try { return JSON.parse(localStorage.getItem(AUTH_USER_KEY) || 'null'); }
+  catch(e) { return null; }
+}
+function isLoggedIn() { return !!getAuthToken(); }
+function setAuth(token, user) {
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+  localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+  updateNavAuth();
+}
+function clearAuth() {
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  localStorage.removeItem(AUTH_USER_KEY);
+  updateNavAuth();
+}
+
+function updateNavAuth() {
+  const nav = document.getElementById('navActions');
+  const user = getAuthUser();
+  if (user) {
+    nav.innerHTML = `<div class="nav-user">
+      <div class="avatar">${user.name.charAt(0)}</div>
+      <span>${user.name}</span>
+      <button class="btn btn-sm" style="padding:6px 12px;font-size:0.75rem;color:#64748b;background:#f1f5f9" onclick="clearAuth();location.reload()">退出</button>
+    </div>`;
+  } else {
+    nav.innerHTML = '<button class="btn btn-sm btn-primary" onclick="openAuthModal()">登录 / 注册</button>';
+  }
+}
+
+function openAuthModal(tab) {
+  document.getElementById('authOverlay').classList.add('active');
+  switchAuthTab(tab || 'login');
+}
+function closeAuthModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('authOverlay').classList.remove('active');
+}
+function switchAuthTab(tab) {
+  document.getElementById('authLogin').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('authRegister').style.display = tab === 'register' ? '' : 'none';
+  document.querySelectorAll('.auth-tab').forEach((b,i) => {
+    b.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='register'));
+  });
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const phone = document.getElementById('loginPhone').value.trim();
+  const password = document.getElementById('loginPwd').value;
+  if (!/^1[3-9]\d{9}$/.test(phone)) return alert('手机号格式不正确');
+  try {
+    const res = await fetch(API_BASE + '/auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, password })
+    });
+    const json = await res.json();
+    if (!json.success) return alert(json.error);
+    setAuth(json.data.token, json.data.user);
+    closeAuthModal();
+  } catch(e) { alert('登录失败，请检查网络'); }
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  const name = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const password = document.getElementById('regPwd').value;
+  if (!name) return alert('请输入姓名');
+  if (!/^1[3-9]\d{9}$/.test(phone)) return alert('手机号格式不正确');
+  if (password.length < 6) return alert('密码至少6位');
+  try {
+    const res = await fetch(API_BASE + '/auth/register', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, name, password })
+    });
+    const json = await res.json();
+    if (!json.success) return alert(json.error);
+    setAuth(json.data.token, json.data.user);
+    closeAuthModal();
+  } catch(e) { alert('注册失败，请检查网络'); }
+}
 
 function getLocalStore() {
   try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '{"bookings":[],"contacts":[],"ai_tests":[]}'); }
@@ -1378,10 +1507,21 @@ async function apiCall(method, path, data) {
   // 先尝试真实 API
   try {
     const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    const token = getAuthToken();
+    if (token) opts.headers['Authorization'] = 'Bearer ' + token;
     if (data) opts.body = JSON.stringify(data);
     const res = await fetch(API_BASE + path, opts);
     if (res.ok) return res.json();
-  } catch(e) { /* 降级到本地存储 */ }
+    if (res.status === 401) {
+      clearAuth();
+      alert('请先登录后再操作');
+      openAuthModal('login');
+      throw new Error('AUTH_REQUIRED');
+    }
+  } catch(e) {
+    if (e.message === 'AUTH_REQUIRED') throw e;
+    /* 降级到本地存储 */
+  }
 
   // localStorage 降级
   if (method === 'POST') {
@@ -1582,6 +1722,11 @@ function collectFormData(type) {
 }
 
 function openModal(type) {
+  // 预约申请需要登录
+  if (!isLoggedIn()) {
+    openAuthModal('login');
+    return;
+  }
   document.getElementById('bookingType').value = type;
   document.getElementById('modalTitle').textContent = modalTitles[type] || '预约申请';
   let sub = modalSubs[type] || '请填写以下信息，我们将尽快与您联系';
@@ -1664,7 +1809,7 @@ async function submitBooking(e) {
       alert('提交失败：' + (result.error || '请稍后重试'));
     }
   } catch (err) {
-    alert('网络错误，请稍后重试');
+    if (err.message !== 'AUTH_REQUIRED') alert('网络错误，请稍后重试');
   } finally {
     btn.textContent = '提交申请 →'; btn.disabled = false;
   }
@@ -1676,11 +1821,14 @@ let payTimer = null;
 // 提交报名后创建订单并弹出支付窗口（course 类型专用）
 async function createOrderAndPay(data) {
   try {
+    const token = getAuthToken();
+    if (!token) { openAuthModal('login'); return; }
     const res = await fetch('/api/orders', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ product: 'course', name: data.name, phone: data.phone, city: data.city }),
     });
+    if (res.status === 401) { clearAuth(); openAuthModal('login'); return; }
     const d = await res.json();
     if (d.success) {
       openPayModal(d.data);
@@ -2543,16 +2691,21 @@ loadCityConfig();
 loadSiteContent();
 initQuiz();
 initAttackGame();
+updateNavAuth();
 
-// 自动弹出「预约参观展厅」引导弹窗（2 秒后弹出，可点 ✕ / 遮罩 / ESC 关闭；关闭后不再自动弹出）
+// 自动弹出「预约参观展厅」引导弹窗（2 秒后弹出，需已登录 + 未被 dismiss）
 let autoPopupActive = false;
 if (!localStorage.getItem('visit_popup_dismissed')) {
-  setTimeout(() => { autoPopupActive = true; openModal('visit'); }, 2000);
+  setTimeout(() => {
+    if (!isLoggedIn()) return; // 未登录不打扰
+    autoPopupActive = true;
+    openModal('visit');
+  }, 2000);
 }
 
 // ESC 关闭弹窗
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeConsult(); closePayModal(); }
+  if (e.key === 'Escape') { closeModal(); closeConsult(); closePayModal(); closeAuthModal(); }
 });
 </script>
 </body>

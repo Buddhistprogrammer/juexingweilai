@@ -144,6 +144,7 @@ select.st{font-size:0.8rem;padding:4px 8px;border-radius:8px;background:rgba(255
   <button class="tab active" id="tabBtnBookings" onclick="switchTab('bookings')">📋 预约管理</button>
   <button class="tab" id="tabBtnOrders" onclick="switchTab('orders')">💰 订单管理</button>
   <button class="tab" id="tabBtnContent" onclick="switchTab('content')">✏️ 内容管理</button>
+  <button class="tab" id="tabBtnQrcode" onclick="switchTab('qrcode')">📱 收款设置</button>
 </div>
 
 <!-- ===== 预约管理 ===== -->
@@ -235,6 +236,64 @@ select.st{font-size:0.8rem;padding:4px 8px;border-radius:8px;background:rgba(255
     </table>
   </div>
   <div class="pagination" id="ordersPagination"></div>
+</div>
+
+<!-- ===== 收款设置 ===== -->
+<div id="pageQrcode" style="display:none">
+  <div style="max-width:600px;margin:32px auto">
+    <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:32px">
+      <h3 style="font-size:1.1rem;margin-bottom:8px">收款二维码</h3>
+      <p style="color:#6b7280;font-size:0.9rem;margin-bottom:24px">
+        用户下单选择「收款码支付」时展示此二维码。支持 PNG / JPG / JPEG，建议尺寸 600×600 以上。
+      </p>
+
+      <!-- 当前收款码预览 -->
+      <div style="text-align:center;margin-bottom:24px;padding:24px;background:rgba(255,255,255,0.03);border-radius:12px" id="qrcodePreviewWrap">
+        <div id="qrcodeStatus" style="color:#6b7280;font-size:0.9rem;padding:40px 0">加载中...</div>
+        <img id="qrcodePreview" src="" alt="收款码预览" style="max-width:280px;width:100%;border-radius:8px;display:none" onerror="this.style.display='none';document.getElementById('qrcodeStatus').style.display=''">
+      </div>
+
+      <!-- 上传区域 -->
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <label style="flex:1;min-width:200px">
+          <input type="file" id="qrcodeFileInput" accept="image/png,image/jpeg,image/jpg" style="display:none" onchange="previewQrcodeFile(this)">
+          <div id="qrcodeDropZone" style="padding:28px;border:2px dashed rgba(255,255,255,0.15);border-radius:12px;text-align:center;cursor:pointer;transition:all 0.2s"
+               onclick="document.getElementById('qrcodeFileInput').click()"
+               ondragover="this.style.borderColor='#7c3aed';this.style.background='rgba(124,58,237,0.08)';event.preventDefault()"
+               ondragleave="this.style.borderColor='rgba(255,255,255,0.15)';this.style.background=''"
+               ondrop="handleQrcodeDrop(event); this.style.borderColor='rgba(255,255,255,0.15)'; this.style.background=''; event.preventDefault()">
+            <div style="font-size:2rem;margin-bottom:8px">📤</div>
+            <div style="color:#9ca3af;font-size:0.9rem">点击选择图片或拖拽到此处</div>
+            <div style="color:#6b7280;font-size:0.75rem;margin-top:4px">PNG / JPG，最大 20MB</div>
+          </div>
+        </label>
+      </div>
+
+      <!-- 已选文件预览 -->
+      <div id="qrcodeFilePreview" style="display:none;margin-top:16px;padding:16px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.2);border-radius:12px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <img id="qrcodeFilePreviewImg" src="" style="width:80px;height:80px;object-fit:contain;border-radius:8px;background:#fff">
+          <div style="flex:1;min-width:150px">
+            <div style="color:#34d399;font-weight:600;font-size:0.9rem" id="qrcodeFileName">-</div>
+            <div style="color:#6b7280;font-size:0.8rem" id="qrcodeFileSize">-</div>
+          </div>
+          <button class="cf-save" onclick="uploadQrcode()" style="padding:10px 24px">💾 更新收款码</button>
+          <button class="cf-del" onclick="cancelQrcodeFile()">取消</button>
+        </div>
+      </div>
+
+      <!-- 底部说明 -->
+      <div style="margin-top:24px;padding:16px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:10px">
+        <div style="color:#fbbf24;font-weight:600;font-size:0.85rem;margin-bottom:4px">💡 使用说明</div>
+        <div style="color:#9ca3af;font-size:0.82rem;line-height:1.6">
+          1. 上传您的微信/支付宝收款二维码图片<br>
+          2. 用户在前台下单选择「收款码支付」时将看到此二维码<br>
+          3. 用户扫码付款后，请在「订单管理」中手动确认收款<br>
+          4. 更换收款码后立即生效，无需重启服务
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ===== 内容管理 ===== -->
@@ -604,14 +663,17 @@ function switchTab(name) {
   document.getElementById('pageBookings').style.display = name === 'bookings' ? 'block' : 'none';
   document.getElementById('pageOrders').style.display = name === 'orders' ? 'block' : 'none';
   document.getElementById('pageContent').style.display = name === 'content' ? 'block' : 'none';
+  document.getElementById('pageQrcode').style.display = name === 'qrcode' ? 'block' : 'none';
   document.getElementById('tabBtnBookings').classList.toggle('active', name === 'bookings');
   document.getElementById('tabBtnOrders').classList.toggle('active', name === 'orders');
   document.getElementById('tabBtnContent').classList.toggle('active', name === 'content');
+  document.getElementById('tabBtnQrcode').classList.toggle('active', name === 'qrcode');
   if (name === 'content') {
     renderBlockNav();
     loadBlock(CONTENT_BLOCKS[0].key);
   }
   if (name === 'orders') loadOrders();
+  if (name === 'qrcode') loadQrcodeStatus();
 }
 
 /* ==================== 订单管理 ==================== */
@@ -881,6 +943,85 @@ async function resetBlock() {
     }
   } catch (e) {
     showMsg('恢复失败：网络错误', 'error');
+  }
+}
+
+// ==================== 收款码管理 ====================
+let qrcodeFile = null;
+
+async function loadQrcodeStatus() {
+  const statusEl = document.getElementById('qrcodeStatus');
+  const preview = document.getElementById('qrcodePreview');
+  try {
+    const res = await fetchAPI('/admin/pay-qrcode');
+    if (res.success && res.data.exists) {
+      statusEl.style.display = 'none';
+      preview.src = res.data.url + '?t=' + Date.now();
+      preview.style.display = '';
+    } else {
+      statusEl.textContent = '尚未上传收款二维码';
+      statusEl.style.display = '';
+      preview.style.display = 'none';
+    }
+  } catch (e) {
+    statusEl.textContent = '加载失败，请刷新重试';
+    statusEl.style.display = '';
+    preview.style.display = 'none';
+  }
+}
+
+function previewQrcodeFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!['image/png', 'image/jpeg'].includes(file.type)) {
+    showMsg('仅支持 PNG / JPG 格式', 'error');
+    return;
+  }
+  qrcodeFile = file;
+  document.getElementById('qrcodeFileName').textContent = file.name;
+  document.getElementById('qrcodeFileSize').textContent = (file.size / 1024).toFixed(1) + ' KB';
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('qrcodeFilePreviewImg').src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  document.getElementById('qrcodeFilePreview').style.display = '';
+}
+
+function handleQrcodeDrop(e) {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    document.getElementById('qrcodeFileInput').files = e.dataTransfer.files;
+    previewQrcodeFile(document.getElementById('qrcodeFileInput'));
+  }
+}
+
+function cancelQrcodeFile() {
+  qrcodeFile = null;
+  document.getElementById('qrcodeFileInput').value = '';
+  document.getElementById('qrcodeFilePreview').style.display = 'none';
+}
+
+async function uploadQrcode() {
+  if (!qrcodeFile) {
+    showMsg('请先选择收款码图片', 'error');
+    return;
+  }
+  const fd = new FormData();
+  fd.append('file', qrcodeFile);
+  try {
+    const res = await fetch('/api/admin/pay-qrcode?token=' + token, { method: 'POST', body: fd });
+    const d = await res.json();
+    if (d.success) {
+      showMsg('收款码已更新，前台立即生效', 'success');
+      cancelQrcodeFile();
+      loadQrcodeStatus();
+    } else {
+      showMsg(d.error || '上传失败', 'error');
+    }
+  } catch (e) {
+    showMsg('上传失败：网络错误', 'error');
   }
 }
 

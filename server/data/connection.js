@@ -120,6 +120,16 @@ function createTables() {
       created_at    TEXT    DEFAULT (datetime('now','localtime'))
     )
   `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      phone         TEXT    UNIQUE NOT NULL,
+      name          TEXT    NOT NULL,
+      password_hash TEXT    NOT NULL,
+      created_at    TEXT    DEFAULT (datetime('now','localtime'))
+    )
+  `);
 }
 
 // ==========================================
@@ -146,6 +156,7 @@ function seedContent() {
 // ==========================================
 function migrate() {
   ensureColumn('bookings', 'extra', 'TEXT');
+  ensureColumn('bookings', 'user_id', 'INTEGER');
 }
 
 // 检测表是否存在某列，不存在则 ALTER TABLE 追加（sql.js 无原生迁移机制）
