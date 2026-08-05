@@ -23,6 +23,11 @@ async function sendWecomMarkdown(markdownContent) {
     });
     const result = await res.text();
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${result}`);
+    // 企微业务码：errcode=0 才视为成功（如 93000 = webhook 无效）
+    const parsed = JSON.parse(result);
+    if (parsed.errcode !== 0) {
+      throw new Error(`企微返回 errcode=${parsed.errcode}: ${parsed.errmsg || ''}`);
+    }
     return { success: true, channel: 'wecom', response: result };
   } catch (err) {
     return { success: false, channel: 'wecom', error: err.message };

@@ -72,6 +72,10 @@ sudo mkdir -p $PROJECT_DIR/server/logs
 sudo mkdir -p $PROJECT_DIR/deploy
 sudo mkdir -p /opt/laikedixiong-site/logs
 
+# 解压项目文件（先清理本地已删除的旧单文件，防止 require 解析到残留版本）
+echo "  清理残留旧文件..."
+sudo rm -f $PROJECT_DIR/server/notify.js $PROJECT_DIR/server/db.js
+
 # 解压项目文件
 echo "  解压项目文件..."
 sudo tar -xzf /tmp/laikedixiong-deploy.tar.gz -C $PROJECT_DIR --overwrite
