@@ -112,6 +112,37 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
 .hero-stat h3 { font-size: 2rem; font-weight: 800; color: #3b82f6; }
 .hero-stat p { font-size: 0.85rem; color: #94a3b8; margin: 0; }
 
+/* ========== Intro（左文右图品牌介绍） ========== */
+.intro { padding: 100px 0; }
+.intro-grid {
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px;
+  align-items: center; max-width: 1100px; margin: 0 auto;
+}
+.intro-text .intro-desc { color: #64748b; font-size: 1.05rem; line-height: 1.9; margin-bottom: 28px; }
+.intro-feats { list-style: none; }
+.intro-feats li {
+  padding: 10px 0; font-size: 0.98rem; color: #475569;
+  display: flex; align-items: center; gap: 12px;
+}
+.intro-feats li::before {
+  content: '✦'; color: #6366f1; font-weight: 700; flex-shrink: 0;
+}
+.intro-media {
+  border-radius: 24px; overflow: hidden; aspect-ratio: 4/3;
+  box-shadow: 0 20px 60px rgba(79,70,229,0.15);
+  background: #f1f5f9;
+}
+.intro-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.intro-img-placeholder {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #2563eb 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 24px; text-align: center;
+}
+.iip-brand { font-size: 2.4rem; font-weight: 900; color: #fff; letter-spacing: -0.02em; }
+.iip-brand span { color: rgba(255,255,255,0.75); }
+.iip-slogan { font-size: 1.05rem; color: rgba(255,255,255,0.85); }
+
 /* ========== Pain Points ========== */
 .pain-points {
   padding: 100px 0; background: #f6f9fc;
@@ -644,6 +675,7 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
   .diff-grid { grid-template-columns: repeat(3, 1fr); }
   .centers-grid { grid-template-columns: repeat(2, 1fr); }
   .pp-grid { grid-template-columns: 1fr; gap: 32px; }
+  .intro-grid { grid-template-columns: 1fr; gap: 40px; }
 }
 @media (max-width: 640px) {
   .hero h1 { font-size: 2rem; }
@@ -703,6 +735,32 @@ button { cursor: pointer; font-family: inherit; border: none; outline: none; }
         <div class="hero-stat"><h3>50+</h3><p>已签约城主</p></div>
         <div class="hero-stat"><h3>100+</h3><p>顶级投资机构</p></div>
         <div class="hero-stat"><h3>10万㎡</h3><p>教培就业基地</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INTRO: 品牌介绍（左文右图） ===== -->
+<section class="intro" id="about">
+  <div class="container">
+    <div class="intro-grid">
+      <div class="intro-text">
+        <span class="section-tag" data-c="intro.tag">关于觉醒未来城</span>
+        <h2 class="section-title" data-c="intro.title">中国县域AI生态综合服务商</h2>
+        <p class="intro-desc" data-c-html="intro.desc">觉醒未来城是来客兄弟AI集团旗下品牌。集团所有课程、软件、硬件、应用场景解决方案全部装入"未来城"，实现统一展示、销售、服务。核心使命：推动中国企业全面AI化。</p>
+        <ul class="intro-feats" id="introFeats">
+          <li>覆盖全国 2800 个区县</li>
+          <li>一城一主 · 排他经营</li>
+          <li>四大中心全链路赋能</li>
+          <li>政府+企业+人才+硬件+资本 五端打通</li>
+        </ul>
+      </div>
+      <div class="intro-media" id="introMedia">
+        <img id="introImg" alt="觉醒未来城" style="display:none">
+        <div class="intro-img-placeholder" id="introPlaceholder">
+          <div class="iip-brand">觉醒<span>未来城</span></div>
+          <div class="iip-slogan">让每座城市都因AI而觉醒</div>
+        </div>
       </div>
     </div>
   </div>
@@ -2243,6 +2301,21 @@ const CONTENT_APPLY = {
     if (m.title) document.title = m.title;
     const md = document.querySelector('meta[name="description"]');
     if (md && m.description) md.content = m.description;
+  },
+  intro(iv) {
+    // 特色要点
+    if (iv.feats && iv.feats.length) {
+      document.getElementById('introFeats').innerHTML =
+        iv.feats.map(f => `<li>${esc(f)}</li>`).join('');
+    }
+    // 图片：有则显示，无则保留渐变占位
+    const img = document.getElementById('introImg');
+    const ph = document.getElementById('introPlaceholder');
+    if (iv.img) {
+      img.src = iv.img;
+      img.style.display = 'block';
+      ph.style.display = 'none';
+    }
   },
   hero(h) {
     if (h.stats && h.stats.length) {
